@@ -1,0 +1,32 @@
+{
+  "name": "offliner",
+  "version": "1.0.0",
+  "description": "2018 js13kgames.com entry.",
+  "scripts": {
+    "build": "gulp"
+  },
+  "author": "@CsabaCsecskedi",
+  "license": "MIT",
+  "devDependencies": {
+    "del": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-cssnano": "^2.1.2",
+    "gulp-minify": "^1.0.0",
+    "gulp-postcss": "^6.3.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-size": "^2.1.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-typescript": "^3.1.5",
+    "gulp-zip": "^3.2.0",
+    "postcss-cssnext": "^2.9.0",
+    "typescript": "^2.4.2"
+  },
+  "postcss": {
+    "plugins": {
+      "postcss-cssnext": {}
+    }
+  },
+  "dependencies": {
+    "tiny3d": "github:tricsi/tiny3d"
+  }
+}

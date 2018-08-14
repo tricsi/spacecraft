@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "target": "es2017",
+        "module": "amd",
+        "sourceMap": true,
+        "outFile": "./script.js"
+    },
+    "include": [
+        "node_modules/tiny3d/src/t3d.ts",
+        "src/Game/*.ts",
+        "src/script.ts"
+    ]
+}
