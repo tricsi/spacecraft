@@ -95,10 +95,20 @@ namespace T3D {
             return this;
         }
 
-        easeOut(vec: Vec3, intense: number = 2): Vec3 {
-            this.x += (vec.x - this.x) / intense;
-            this.y += (vec.y - this.y) / intense;
-            this.z += (vec.z - this.z) / intense;
+        moveTo(vec: Vec3, step: number = .1) {
+            let diff = vec.clone().sub(this);
+            if (diff.length() <= step) {
+                this.set(vec.x, vec.y, vec.z);
+            } else {
+                this.add(diff.normalize().scale(step));
+            }
+            return this;
+        }
+
+        easeOut(vec: Vec3, divider: number = 2): Vec3 {
+            let diff = vec.clone().sub(this);
+            let length = diff.length();
+            this.add(diff.normalize().scale(length / divider));
             return this;
         }
 

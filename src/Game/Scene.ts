@@ -11,13 +11,25 @@ namespace Game {
     export class Scene implements SceneInterface {
 
         hero: Hero = new Hero();
+        platforms: Platform[] = [];
+
+        constructor() {
+            for (let y = -9; y <= 2; y++) {
+                for (let x = -1; x <= 1; x++) {
+                    let platform = new Platform();
+                    platform.transform.translate.set(x, y);
+                    this.platforms.push(platform);
+                }
+            }
+            return this;
+        }
 
         input(keys: any, down: boolean): void {
             const pos = this.hero.pos;
-            if (keys.ArrowLeft && down && pos.x >= 0) {
+            if ((keys.ArrowLeft || keys.KeyA) && down && pos.x >= 0) {
                 pos.x--;
             }
-            if (keys.ArrowRight && down && pos.x <= 0) {
+            if ((keys.ArrowRight || keys.KeyD) && down && pos.x <= 0) {
                 pos.x++;
             }
         }
@@ -25,13 +37,19 @@ namespace Game {
         render(ctx: CanvasRenderingContext2D): void {
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             ctx.save();
-            ctx.translate(Math.round(ctx.canvas.width / 2), Math.round(ctx.canvas.height / 2));
+            ctx.translate(Math.round(ctx.canvas.width / 2), Math.round(ctx.canvas.height / 1.2));
             ctx.scale(64, 64);
+            this.platforms.forEach(platform => {
+                platform.render(ctx);
+            });
             this.hero.render(ctx);
             ctx.restore();
         }
         
         update(): void {
+            this.platforms.forEach(platform => {
+                platform.update(.05, -9, 2);
+            });
             this.hero.update();
         }
 

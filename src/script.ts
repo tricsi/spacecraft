@@ -41,14 +41,18 @@ namespace Game {
     
     function bind(): void {
         on(document, 'keydown', (e: KeyboardEvent) => {
-            keys[e.code] = true;
-            keys[0] = keys[13] || keys[32] || e.shiftKey || e.ctrlKey;
-            scene.input(keys, true);
+            if (!keys[e.code]) {
+                keys[e.code] = true;
+                keys[0] = keys[13] || keys[32] || e.shiftKey || e.ctrlKey;
+                scene.input(keys, true);
+            }
         });
         on(document, 'keyup', (e: KeyboardEvent) => {
-            keys[e.code] = false;
-            keys[0] = keys[13] || keys[32] || e.shiftKey || e.ctrlKey;
-            scene.input(keys, false);
+            if (keys[e.code]) {
+                keys[e.code] = false;
+                keys[0] = keys[13] || keys[32] || e.shiftKey || e.ctrlKey;
+                scene.input(keys, false);
+            }
         });
         on(window, 'resize', resize);
     }
