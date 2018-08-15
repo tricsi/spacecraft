@@ -7,7 +7,7 @@
         "outFile": "./script.js"
     },
     "include": [
-        "node_modules/tiny3d/src/t3d.ts",
+        "src/t3d.ts",
         "src/Game/*.ts",
         "src/script.ts"
     ]

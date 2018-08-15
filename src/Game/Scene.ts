@@ -13,12 +13,12 @@ namespace Game {
         hero: Hero = new Hero();
 
         input(keys: any, down: boolean): void {
-            const hero = this.hero;
-            if (keys.ArrowLeft && down && hero.pos.x >= 0) {
-                hero.pos.x--;
+            const pos = this.hero.pos;
+            if (keys.ArrowLeft && down && pos.x >= 0) {
+                pos.x--;
             }
-            if (keys.ArrowRight && down && hero.pos.x <= 0) {
-                hero.pos.x++;
+            if (keys.ArrowRight && down && pos.x <= 0) {
+                pos.x++;
             }
         }
         
@@ -32,6 +32,7 @@ namespace Game {
         }
         
         update(): void {
+            this.hero.update();
         }
 
     }
