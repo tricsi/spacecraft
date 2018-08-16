@@ -9,7 +9,7 @@ namespace Game {
         render(ctx: CanvasRenderingContext2D) {
             const pos = this.transform.translate;
             ctx.beginPath();
-            ctx.arc(pos.x, pos.y, pos.z / 10 + .4, 0, Math.PI * 2);
+            ctx.arc(pos.x, pos.z, pos.y / 10 + .4, 0, Math.PI * 2);
             ctx.closePath();
             ctx.fillStyle = "red";
             ctx.fill();

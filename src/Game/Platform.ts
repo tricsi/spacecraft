@@ -11,23 +11,23 @@ namespace Game {
             let pos = this.transform.translate,
                 scale = this.transform.scale;
             ctx.fillStyle = "blue";
-            ctx.fillRect(pos.x - scale.x * .45, pos.y - scale.y * .45, scale.x * .9, scale.y * .9);
+            ctx.fillRect(pos.x - scale.x * .45, pos.z - scale.z * .45, scale.x * .9, scale.z * .9);
         }
 
         update(speed, from, to) {
             let pos = this.transform.translate,
                 scale = this.transform.scale;
-            pos.y += speed;
-            if (pos.y > to) {
-                pos.y = from;
+            pos.z += speed;
+            if (pos.z > to) {
+                pos.z = from;
             }
             scale.x = 1;
-            if (pos.y < from + 1) {
-                scale.x = pos.y - from;
-            } else if (pos.y > to - 1) {
-                scale.x = to - pos.y; 
+            if (pos.z < from + 1) {
+                scale.x = pos.z - from;
+            } else if (pos.z > to - 1) {
+                scale.x = to - pos.z; 
             }
-            scale.y = scale.x;
+            scale.z = scale.x;
         }
     }
 

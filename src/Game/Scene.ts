@@ -14,10 +14,10 @@ namespace Game {
         platforms: Platform[] = [];
 
         constructor() {
-            for (let y = -9; y <= 2; y++) {
+            for (let z = -9; z <= 2; z++) {
                 for (let x = -1; x <= 1; x++) {
                     let platform = new Platform();
-                    platform.transform.translate.set(x, y);
+                    platform.transform.translate.set(x, 0, z);
                     this.platforms.push(platform);
                 }
             }
