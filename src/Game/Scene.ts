@@ -10,13 +10,15 @@ namespace Game {
 
     export class Scene implements SceneInterface {
 
+        map: number = 2; // platform bit map
         row: number = 9; // active row
-        index: number = 28; // active platform
         speed: number = .05; // move speed
         hero: Hero = new Hero();
+        distance: number = 0;
         platforms: Platform[] = [];
 
         constructor() {
+            Rand.seed = 42;
             for (let z = -9; z < 2; z++) {
                 for (let x = -1; x <= 1; x++) {
                     let platform = new Platform();
@@ -24,52 +26,77 @@ namespace Game {
                     this.platforms.push(platform);
                 }
             }
-            return this;
         }
 
         input(keys: any, down: boolean): void {
-            const pos = this.hero.pos;
-            if ((keys.ArrowLeft || keys.KeyA) && down && pos.x >= 0) {
-                pos.x--;
+            if (this.hero.fall) {
+                return;
             }
-            if ((keys.ArrowRight || keys.KeyD) && down && pos.x <= 0) {
-                pos.x++;
+            const hero = this.hero;
+            if ((keys.ArrowLeft || keys.KeyA) && down && hero.x >= 0) {
+                hero.x--;
+            }
+            if ((keys.ArrowRight || keys.KeyD) && down && hero.x <= 0) {
+                hero.x++;
             }
         }
         
         render(ctx: CanvasRenderingContext2D): void {
+            let hero = this.hero,
+                under = hero.transform.translate.y < -.5,
+                scale = Math.round(ctx.canvas.height / 11);
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             ctx.save();
             ctx.translate(Math.round(ctx.canvas.width / 2), Math.round(ctx.canvas.height / 1.2));
-            ctx.scale(64, 64);
+            ctx.scale(scale, scale);
+            if (under) {
+                hero.render(ctx);
+            }
             this.platforms.forEach((platform, i) => {
                 platform.render(ctx);
             });
-            this.hero.render(ctx);
+            if (!under) {
+                hero.render(ctx);
+            }
             ctx.restore();
         }
-        
-        update(): void {
-            this.hero.update();
-            this.platforms.forEach(platform => {
-                let pos = platform.transform.translate;
-                pos.z += this.speed;
-                if (pos.z > 2) {
-                    pos.z -= 11;
-                }
-                let scale = 1;
-                if (pos.z < -8) {
-                    scale = pos.z + 9;
-                } else if (pos.z > 1) {
-                    scale = 2 - pos.z; 
-                }
-                platform.transform.scale.set(scale, scale, scale);
-            });
+
+        updateMap(): void {
+            switch (++this.distance % 8) {
+                case 0:
+                    this.map = Rand.get(7, 1);
+                    break;
+                case 5:
+                    this.map = 7;
+                    break;
+            }
+        }
+
+        updateIndex(): number {
             this.row -= this.speed;
             if (this.row <= -.5) {
-                this.row += 11; 
+                this.row += 11;
             }
-            this.index = Math.round(this.row) * 3 + Math.round(this.hero.transform.translate.x) + 1;
+            return Math.round(this.row) * 3 + Math.round(this.hero.transform.translate.x) + 1;
+        }
+
+        update(): void {
+            let rotate = false,
+                hero = this.hero;
+            hero.update();
+            this.platforms.forEach((platform, i) => {
+                if (platform.update(this.speed)) {
+                    platform.active = (this.map >> (i % 3) & 1) > 0;
+                    rotate = true;
+                }
+            });
+            if (rotate) {
+                this.updateMap();
+            }
+            let index = this.updateIndex();
+            if (!hero.fall) {
+                hero.fall = !this.platforms[index].active;
+            }
         }
 
     }
