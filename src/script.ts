@@ -31,7 +31,6 @@ namespace Game {
     
     let canvas: HTMLCanvasElement,
         ctx: CanvasRenderingContext2D,
-        keys: object = {},
         scene: SceneInterface;
 
     function resize(): void {
@@ -40,10 +39,58 @@ namespace Game {
     }
     
     function bind(): void {
+        let x: number = 0,
+            y: number = 0,
+            min: number = 20,
+            drag = false,
+            keys: any = {};
+        on(document, 'touchstart', (e: TouchEvent) => {
+            e.preventDefault();
+            let touch = e.touches[0];
+            x = touch.clientX;
+            y = touch.clientY;
+            drag = true;
+        });
+        on(document, 'touchmove', (e: TouchEvent) => {
+            e.preventDefault();
+            if (!drag) {
+                return;
+            }
+            let touch = e.touches[0];
+            if (!keys.ArrowRight && touch.clientX - x > min) {
+                keys.ArrowRight = true;
+                scene.input(keys, true);
+                drag = false;
+            }
+            if (!keys.ArrowLeft && touch.clientX - x < -min) {
+                keys.ArrowLeft = true;
+                scene.input(keys, true);
+                drag = false;
+            }
+            if (!keys.ArrowUp && touch.clientY - y > min) {
+                keys.ArrowUp = true;
+                scene.input(keys, true);
+                drag = false;
+            }
+            if (!keys.ArrowDown && touch.clientY - y < -min) {
+                keys.ArrowDown = true;
+                scene.input(keys, true);
+                drag = false;
+            }
+        });
+        on(document, 'touchend', (e: TouchEvent) => {
+            e.preventDefault();
+            keys.ArrowRight =
+            keys.ArrowLeft =
+            keys.ArrowUp =
+            keys.ArrowDown =
+            drag = false;
+            scene.input(keys, false);
+        });
         on(document, 'keydown', (e: KeyboardEvent) => {
             if (!keys[e.code]) {
                 keys[e.code] = true;
-                keys[0] = keys[13] || keys[32] || e.shiftKey || e.ctrlKey;
+                keys[0] = keys.Enter || keys.Space || e.shiftKey || e.ctrlKey;
                 scene.input(keys, true);
             }
         });
