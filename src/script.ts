@@ -45,14 +45,12 @@ namespace Game {
             drag = false,
             keys: any = {};
         on(document, 'touchstart', (e: TouchEvent) => {
-            e.preventDefault();
             let touch = e.touches[0];
             x = touch.clientX;
             y = touch.clientY;
             drag = true;
         });
         on(document, 'touchmove', (e: TouchEvent) => {
-            e.preventDefault();
             if (!drag) {
                 return;
             }
@@ -79,7 +77,11 @@ namespace Game {
             }
         });
         on(document, 'touchend', (e: TouchEvent) => {
-            e.preventDefault();
+            if (drag) {
+                keys.Space = true;
+                scene.input(keys, true);
+            }
+            keys.Space =
             keys.ArrowRight =
             keys.ArrowLeft =
             keys.ArrowUp =

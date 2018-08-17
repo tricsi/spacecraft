@@ -2,8 +2,6 @@ namespace Game {
 
     export class Platform extends T3D.Item {
 
-        active: boolean = true;
-
         render(ctx: CanvasRenderingContext2D) {
             if (!this.active) {
                 return;

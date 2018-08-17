@@ -10,6 +10,9 @@ namespace Game {
         speed: number = 0;
 
         render(ctx: CanvasRenderingContext2D) {
+            if (!this.active) {
+                return;
+            }
             let pos = this.transform.translate,
                 rad = pos.y / 10 + .4;
             if (rad > 0) {
@@ -22,7 +25,7 @@ namespace Game {
         }
 
         update() {
-            if (this.dead()) {
+            if (!this.active) {
                 return;
             }
             let pos = this.transform.translate;
@@ -33,10 +36,7 @@ namespace Game {
                 this.speed = 0;
                 pos.y = 0;
             }
-        }
-
-        dead() {
-            return this.transform.translate.y < -10;
+            this.active =  pos.y > -10;
         }
 
     }

@@ -95,23 +95,6 @@ namespace T3D {
             return this;
         }
 
-        moveTo(vec: Vec3, step: number = .1) {
-            let diff = vec.clone().sub(this);
-            if (diff.length() <= step) {
-                this.set(vec.x, vec.y, vec.z);
-            } else {
-                this.add(diff.normalize().scale(step));
-            }
-            return this;
-        }
-
-        easeOut(vec: Vec3, divider: number = 2): Vec3 {
-            let diff = vec.clone().sub(this);
-            let length = diff.length();
-            this.add(diff.normalize().scale(length / divider));
-            return this;
-        }
-
         toArray(): Array<number> {
             return [this.x, this.y, this.z];
         }
@@ -532,6 +515,7 @@ namespace T3D {
         color: Array<number>;
         transform: Transform;
         childs: Array<Item> = [];
+        active: boolean = true;
 
         constructor(mesh?: Mesh, color?: Array<number>, transform?: Array<number>) {
             this.mesh = mesh;

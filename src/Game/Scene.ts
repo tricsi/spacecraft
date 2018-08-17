@@ -10,15 +10,26 @@ namespace Game {
 
     export class Scene implements SceneInterface {
 
-        map: number = 2; // platform bit map
-        row: number = 9; // active row
-        speed: number = .05; // move speed
-        hero: Hero = new Hero();
-        distance: number = 0;
-        platforms: Platform[] = [];
+        hero: Hero;
+        map: number; // platform bit map
+        row: number; // active row
+        speed: number; // move speed
+        distance: number;
+        platforms: Platform[];
+        hud: HTMLElement;
 
         constructor() {
-            Rand.seed = 42;
+            this.hud = document.getElementById('hud');
+            this.init();
+        }
+
+        init() {
+            this.hero = new Hero();
+            this.map = 2;
+            this.row = 9;
+            this.speed = .05;
+            this.distance = 0;
+            this.platforms = [];
             for (let z = -9; z < 2; z++) {
                 for (let x = -1; x <= 1; x++) {
                     let platform = new Platform();
@@ -26,10 +37,14 @@ namespace Game {
                     this.platforms.push(platform);
                 }
             }
+            Rand.seed = 42;
         }
 
         input(keys: any, down: boolean): void {
             if (this.hero.fall) {
+                if (keys.Space) {
+                    this.init();
+                }
                 return;
             }
             const hero = this.hero;
@@ -59,10 +74,11 @@ namespace Game {
                 hero.render(ctx);
             }
             ctx.restore();
+            this.hud.textContent = `Distance: ${this.distance.toFixed(2)}`;
         }
 
         updateMap(): void {
-            switch (++this.distance % 8) {
+            switch (Math.round(this.distance) % 8) {
                 case 0:
                     this.map = Rand.get(7, 1);
                     break;
@@ -97,6 +113,7 @@ namespace Game {
             if (!hero.fall) {
                 hero.fall = !this.platforms[index].active;
             }
+            this.distance += this.speed;
         }
 
     }
