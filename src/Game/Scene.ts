@@ -13,7 +13,9 @@ namespace Game {
         hero: Hero;
         map: number; // platform bit map
         row: number; // active row
+        token: number; 
         speed: number; // move speed
+        tokens: number; 
         distance: number;
         platforms: Platform[];
         hud: HTMLElement;
@@ -28,11 +30,13 @@ namespace Game {
             this.map = 2;
             this.row = 9;
             this.speed = .05;
+            this.tokens = 0;
             this.distance = 0;
             this.platforms = [];
             for (let z = -9; z < 2; z++) {
                 for (let x = -1; x <= 1; x++) {
                     let platform = new Platform();
+                    platform.token.active = false;
                     platform.transform.translate.set(x, -1, z);
                     this.platforms.push(platform);
                 }
@@ -74,16 +78,18 @@ namespace Game {
                 hero.render(ctx);
             }
             ctx.restore();
-            this.hud.textContent = `Distance: ${this.distance.toFixed(2)}`;
+            this.hud.textContent = `Distance: ${hero.distance.toFixed(2)}\nTokens: ${this.tokens}`;
         }
 
         updateMap(): void {
-            switch (Math.round(this.distance) % 8) {
+            switch (Math.round(this.distance) % 5) {
                 case 0:
                     this.map = Rand.get(7, 1);
+                    this.token = Rand.get(7, 0) & this.map;
                     break;
-                case 5:
+                case 3:
                     this.map = 7;
+                    this.token = Rand.get(7, 0);
                     break;
             }
         }
@@ -103,17 +109,25 @@ namespace Game {
             this.platforms.forEach((platform, i) => {
                 if (platform.update(this.speed)) {
                     platform.active = (this.map >> (i % 3) & 1) > 0;
+                    platform.token.active = (this.token >> (i % 3) & 1) > 0;
                     rotate = true;
                 }
             });
             if (rotate) {
                 this.updateMap();
             }
-            let index = this.updateIndex();
-            if (!hero.fall) {
-                hero.fall = !this.platforms[index].active;
-            }
             this.distance += this.speed;
+            if (hero.fall) {
+                return;
+            }
+            let index = this.updateIndex(),
+                platform = this.platforms[index];
+            if (platform.token.active) {
+                platform.token.active = false;
+                this.tokens++;
+            }
+            hero.fall = !platform.active;
+            hero.distance = this.distance;
         }
 
     }

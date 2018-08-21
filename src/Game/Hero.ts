@@ -5,16 +5,18 @@ namespace Game {
     export class Hero extends T3D.Item {
 
         x: number = 0;
+        rad: number = .4;
         acc: number = -.02;
         fall: boolean = false;
         speed: number = 0;
+        distance: number = 0;
 
         render(ctx: CanvasRenderingContext2D) {
             if (!this.active) {
                 return;
             }
             let pos = this.transform.translate,
-                rad = pos.y / 10 + .4;
+                rad = pos.y / 10 + this.rad;
             if (rad > 0) {
                 ctx.beginPath();
                 ctx.arc(pos.x, pos.z, rad, 0, Math.PI * 2);
