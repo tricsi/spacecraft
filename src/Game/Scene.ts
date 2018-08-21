@@ -11,11 +11,9 @@ namespace Game {
     export class Scene implements SceneInterface {
 
         hero: Hero;
-        map: number; // platform bit map
+        map: Map; // platform bit map
         row: number; // active row
-        token: number; 
         speed: number; // move speed
-        tokens: number; 
         distance: number;
         platforms: Platform[];
         hud: HTMLElement;
@@ -27,10 +25,9 @@ namespace Game {
 
         init() {
             this.hero = new Hero();
-            this.map = 2;
+            this.map = new Map();
             this.row = 9;
             this.speed = .05;
-            this.tokens = 0;
             this.distance = 0;
             this.platforms = [];
             for (let z = -9; z < 2; z++) {
@@ -78,20 +75,7 @@ namespace Game {
                 hero.render(ctx);
             }
             ctx.restore();
-            this.hud.textContent = `Distance: ${hero.distance.toFixed(2)}\nTokens: ${this.tokens}`;
-        }
-
-        updateMap(): void {
-            switch (Math.round(this.distance) % 5) {
-                case 0:
-                    this.map = Rand.get(7, 1);
-                    this.token = Rand.get(7, 0) & this.map;
-                    break;
-                case 3:
-                    this.map = 7;
-                    this.token = Rand.get(7, 0);
-                    break;
-            }
+            this.hud.textContent = `Distance: ${hero.distance.toFixed(2)}\nTokens: ${hero.tokens}`;
         }
 
         updateIndex(): number {
@@ -108,13 +92,13 @@ namespace Game {
             hero.update();
             this.platforms.forEach((platform, i) => {
                 if (platform.update(this.speed)) {
-                    platform.active = (this.map >> (i % 3) & 1) > 0;
-                    platform.token.active = (this.token >> (i % 3) & 1) > 0;
+                    platform.active = (this.map.platform >> (i % 3) & 1) > 0;
+                    platform.token.active = (this.map.token >> (i % 3) & 1) > 0;
                     rotate = true;
                 }
             });
             if (rotate) {
-                this.updateMap();
+                this.map.update();
             }
             this.distance += this.speed;
             if (hero.fall) {
@@ -124,7 +108,7 @@ namespace Game {
                 platform = this.platforms[index];
             if (platform.token.active) {
                 platform.token.active = false;
-                this.tokens++;
+                hero.tokens++;
             }
             hero.fall = !platform.active;
             hero.distance = this.distance;

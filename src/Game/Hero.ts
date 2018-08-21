@@ -9,6 +9,7 @@ namespace Game {
         acc: number = -.02;
         fall: boolean = false;
         speed: number = 0;
+        tokens: number = 0;
         distance: number = 0;
 
         render(ctx: CanvasRenderingContext2D) {
