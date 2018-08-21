@@ -21,9 +21,17 @@ namespace T3D {
             this.set(x, y, z);
         }
 
-        set(x?: number, y?: number, z?: number): Vec3 {
-            if (typeof x == 'number') {
-                this.x = x;
+        set(vec?: Vec3): Vec3;
+        set(x?: number, y?: number, z?: number): Vec3;
+        set(xOrVec?: any, y?: number, z?: number): Vec3 {
+            if (xOrVec instanceof Vec3) {
+                this.x = xOrVec.x;
+                this.y = xOrVec.y;
+                this.z = xOrVec.z;
+                return this;
+            }
+            if (typeof xOrVec == 'number') {
+                this.x = xOrVec;
             }
             if (typeof y == 'number') {
                 this.y = y;
