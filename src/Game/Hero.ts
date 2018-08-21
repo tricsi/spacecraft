@@ -12,6 +12,12 @@ namespace Game {
         tokens: number = 0;
         distance: number = 0;
 
+        jump() {
+            if (!this.transform.translate.y) {
+                this.acc = .07;
+            }
+        }
+
         render(ctx: CanvasRenderingContext2D) {
             if (!this.active) {
                 return;
@@ -31,6 +37,7 @@ namespace Game {
             if (!this.active) {
                 return;
             }
+            this.acc -= this.acc > -.02 ? .01 : 0;
             let pos = this.transform.translate;
             this.speed += this.acc;
             pos.y += this.speed;

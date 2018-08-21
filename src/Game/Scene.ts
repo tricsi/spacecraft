@@ -55,6 +55,9 @@ namespace Game {
             if ((keys.ArrowRight || keys.KeyD) && down && hero.x <= 0) {
                 hero.x++;
             }
+            if ((keys.ArrowUp || keys.KeyW) && down) {
+                hero.jump();
+            }
         }
         
         render(ctx: CanvasRenderingContext2D): void {
@@ -104,13 +107,15 @@ namespace Game {
             if (hero.fall) {
                 return;
             }
-            let index = this.updateIndex(),
-                platform = this.platforms[index];
-            if (platform.token.active) {
-                platform.token.active = false;
+            let pos = hero.transform.translate,
+                index = this.updateIndex(),
+                platform = this.platforms[index],
+                token = platform.token;
+            if (token.active) {
+                token.active = false;
                 hero.tokens++;
             }
-            hero.fall = !platform.active;
+            hero.fall = !pos.y && !platform.active;
             hero.distance = this.distance;
         }
 
