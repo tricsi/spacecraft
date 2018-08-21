@@ -66,13 +66,13 @@ namespace Game {
                 scene.input(keys, true);
                 drag = false;
             }
-            if (!keys.ArrowUp && touch.clientY - y > min) {
-                keys.ArrowUp = true;
+            if (!keys.ArrowDown && touch.clientY - y > min) {
+                keys.ArrowDown = true;
                 scene.input(keys, true);
                 drag = false;
             }
-            if (!keys.ArrowDown && touch.clientY - y < -min) {
-                keys.ArrowDown = true;
+            if (!keys.ArrowUp && touch.clientY - y < -min) {
+                keys.ArrowUp = true;
                 scene.input(keys, true);
                 drag = false;
             }
