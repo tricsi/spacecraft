@@ -13,7 +13,6 @@ namespace Game {
         hero: Hero;
         map: Map; // platform bit map
         row: number; // active row
-        speed: number; // move speed
         distance: number;
         platforms: Platform[];
         hud: HTMLElement;
@@ -27,7 +26,6 @@ namespace Game {
             this.hero = new Hero();
             this.map = new Map();
             this.row = 9;
-            this.speed = .05;
             this.distance = 0;
             this.platforms = [];
             for (let z = -9; z < 2; z++) {
@@ -58,6 +56,9 @@ namespace Game {
             if ((keys.ArrowUp || keys.KeyW) && down) {
                 hero.jump();
             }
+            if (keys.Space) {
+                hero.boost();
+            }
         }
         
         render(ctx: CanvasRenderingContext2D): void {
@@ -81,8 +82,8 @@ namespace Game {
             this.hud.textContent = `Distance: ${hero.distance.toFixed(2)}\nTokens: ${hero.tokens}`;
         }
 
-        updateIndex(): number {
-            this.row -= this.speed;
+        updateIndex(speed:number): number {
+            this.row -= speed;
             if (this.row <= -.5) {
                 this.row += 11;
             }
@@ -91,10 +92,11 @@ namespace Game {
 
         update(): void {
             let rotate = false,
-                hero = this.hero;
+                hero = this.hero,
+                speed = hero.speedZ();
             hero.update();
             this.platforms.forEach((platform, i) => {
-                if (platform.update(this.speed)) {
+                if (platform.update(speed)) {
                     platform.active = (this.map.platform >> (i % 3) & 1) > 0;
                     platform.token.active = (this.map.token >> (i % 3) & 1) > 0;
                     rotate = true;
@@ -103,19 +105,19 @@ namespace Game {
             if (rotate) {
                 this.map.update();
             }
-            this.distance += this.speed;
+            this.distance += speed;
             if (hero.fall) {
                 return;
             }
             let pos = hero.transform.translate,
-                index = this.updateIndex(),
+                index = this.updateIndex(speed),
                 platform = this.platforms[index],
                 token = platform.token;
             if (token.active) {
                 token.active = false;
                 hero.tokens++;
             }
-            hero.fall = !pos.y && !platform.active;
+            hero.fall = !hero.timer && !pos.y && !platform.active;
             hero.distance = this.distance;
         }
 
