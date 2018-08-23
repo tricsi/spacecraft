@@ -16,7 +16,7 @@ namespace Game {
         init() {
             this.active = true;
             this.transform = new T3D.Transform();
-            this.transform.rotate.z = 90;
+            this.transform.scale.set(.8, .8, .8);
             this.x = 0;
             this.rad = .4;
             this.acc = -.02;
@@ -42,25 +42,25 @@ namespace Game {
         }
 
         update() {
+            if (this.timer) {
+                this.timer -= this.timer > 0 ? 1 : 0;
+            }
             if (!this.active) {
                 return;
             }
             this.acc -= this.acc > -.02 ? .01 : 0;
             let pos = this.transform.translate,
                 rotate = this.transform.rotate;
-            pos.x += (this.x - pos.x) / 5;
+            pos.x += (this.x - pos.x) / 7;
+            rotate.z = 90 + (pos.x - this.x) * 20;
             rotate.y = (rotate.y + this.speedZ()* 100) % 360;
-            if (this.timer) {
-                this.timer -= this.timer > 0 ? 1 : 0;
-            } else {
-                this.speed.y += this.acc;
-                pos.y += this.speed.y;
-                if (pos.y < 0 && !this.fall) {
-                    this.speed.y = 0;
-                    pos.y = 0;
-                }
-                this.active =  pos.y > -10;
+            this.speed.y += this.acc;
+            pos.y += this.speed.y;
+            if (pos.y < 0 && !this.fall) {
+                this.speed.y = 0;
+                pos.y = 0;
             }
+            this.active =  pos.y > -10;
         }
 
     }

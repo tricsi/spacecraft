@@ -41,43 +41,45 @@ namespace Game {
             diffuse: [.8, .8, .8],
             specular: [.8, .8, .8]
         },
-        shader: T3D.Shader = new T3D.Shader(gl, `precision mediump float;
-attribute vec3 aPos, aNorm;
-uniform mat4 uWorld, uProj;
-uniform mat3 uInverse;
-uniform float uStroke;
-varying vec4 vPos;
-varying vec3 vNorm;
+        shader: T3D.Shader = new T3D.Shader(gl,
+            'precision mediump float;' +
+            'attribute vec3 aPos, aNorm;' +
+            'uniform mat4 uWorld, uProj;' +
+            'uniform mat3 uInverse;' +
+            'uniform float uStroke;' +
+            'varying vec4 vPos;' +
+            'varying vec3 vNorm;' +
+            'void main(void) {' +
+                'vec3 pos = aPos + (aNorm * uStroke);' +
+                'vPos = uWorld * vec4(pos, 1.0);' +
+                'vNorm = uInverse * aNorm;' +
+                'gl_Position = uProj * vPos;' +
+            '}',
 
-void main(void) {
-vec3 pos = aPos + (aNorm * uStroke);
-vPos = uWorld * vec4(pos, 1.0);
-vNorm = uInverse * aNorm;
-gl_Position = uProj * vPos;
-}`, `precision mediump float;
-uniform mat4 uWorld;
-uniform vec4 uColor;
-uniform vec3 uLight;
-uniform vec3 uAmbient;
-uniform vec3 uDiffuse;
-uniform vec3 uSpecular;
-uniform float uLevels;
-varying vec4 vPos;
-varying vec3 vNorm;
-
-void main(void) {
-vec3 lightDir = normalize(uLight - vPos.xyz);
-vec3 normal = normalize(vNorm);
-vec3 eyeDir = normalize(-vPos.xyz);
-vec3 reflectionDir = reflect(-lightDir, normal);
-float specularWeight = 0.0;
-if (uColor.w > 0.0) { specularWeight = pow(max(dot(reflectionDir, eyeDir), 0.0), uColor.w); }
-float diffuseWeight = max(dot(normal, lightDir), 0.0);
-vec3 weight = uAmbient + uSpecular * specularWeight  + uDiffuse * diffuseWeight;
-vec3 color = uColor.xyz * weight;
-if (uLevels > 1.0) { color = floor(color * uLevels) * (1.0 / uLevels); }
-gl_FragColor = vec4(color, 1);
-}`);
+            'precision mediump float;' +
+            'uniform mat4 uWorld;' +
+            'uniform vec4 uColor;' +
+            'uniform vec3 uLight;' +
+            'uniform vec3 uAmbient;' +
+            'uniform vec3 uDiffuse;' +
+            'uniform vec3 uSpecular;' +
+            'uniform float uLevels;' +
+            'varying vec4 vPos;' +
+            'varying vec3 vNorm;' +
+            'void main(void) {' +
+                'vec3 lightDir = normalize(uLight - vPos.xyz);' +
+                'vec3 normal = normalize(vNorm);' +
+                'vec3 eyeDir = normalize(-vPos.xyz);' +
+                'vec3 reflectionDir = reflect(-lightDir, normal);' +
+                'float specularWeight = 0.0;' +
+                'if (uColor.w > 0.0) { specularWeight = pow(max(dot(reflectionDir, eyeDir), 0.0), uColor.w); }' +
+                'float diffuseWeight = max(dot(normal, lightDir), 0.0);' +
+                'vec3 weight = uAmbient + uSpecular * specularWeight  + uDiffuse * diffuseWeight;' +
+                'vec3 color = uColor.xyz * weight;' +
+                'if (uLevels > 1.0) { color = floor(color * uLevels) * (1.0 / uLevels); }' +
+                'gl_FragColor = vec4(color, 1);' +
+            '}'
+        );
 
     function resize() {
         canvas.width = canvas.clientWidth;
@@ -185,8 +187,9 @@ gl_FragColor = vec4(color, 1);
 
     function anim(): void {
         requestAnimationFrame(anim);
-        gl.clear(gl.COLOR_BUFFER_BIT);
         scene.update();
+        camera.position.x = scene.hero.transform.translate.x;
+        gl.clear(gl.COLOR_BUFFER_BIT);
         render(scene);
         render(scene, .02);
         hud.textContent = `Distance: ${scene.hero.distance.toFixed(2)}\nTokens: ${scene.hero.tokens}`;

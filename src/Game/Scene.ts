@@ -11,15 +11,15 @@ namespace Game {
         constructor(gl: WebGLRenderingContext) {
             super();
             this.map = new Map();
-            this.hero = new Hero(new T3D.Mesh(gl, 12), [.1, 1, .1, 30]);
+            this.hero = new Hero(new T3D.Mesh(gl, 10), [.1, 1, .1, 10]);
             this.add(this.hero);
             this.platforms = [];
-            const mesh = new T3D.Mesh(gl, 4, [.65, .5, .4, -.5]);
+            const platfomMesh = new T3D.Mesh(gl, 4, [.65, .5, .2, -.5]);
             const tokenMesh =  new T3D.Mesh(gl, 9, [.45, .3, .45, .5, .5, .5, .5, -.5, .45, -.5, .45, -.3], 30);
             const blue = [.3, .3, 1, 30];
             const yellow = [1, 1, .3, 30];
             for (let i = 0; i < 33; i++) {
-                let platform = new Platform(mesh, blue);
+                let platform = new Platform(platfomMesh, blue);
                 platform.token = new T3D.Item(tokenMesh, yellow, [,1,,90,,,.5,.1,.5]);
                 platform.add(platform.token);
                 this.platforms.push(platform);
@@ -101,7 +101,7 @@ namespace Game {
                 token.active = false;
                 hero.tokens++;
             }
-            hero.fall = !hero.timer && !pos.y && !platform.active;
+            hero.fall = !pos.y && !platform.active;
             hero.distance = this.distance;
         }
 

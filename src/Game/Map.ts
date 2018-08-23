@@ -16,8 +16,8 @@ namespace Game {
         rand(init: boolean = true) {
             if (init) {
                 this.platform = Rand.get(6, 1);
-                this.max = Rand.get(6, 4);
-                this.min = Rand.get(this.max - 1, this.max - 3);
+                this.max = Rand.get(7, 4);
+                this.min = Rand.get(this.max - 2, this.max - 3);
             } else {
                 this.platform = 7;
             }
