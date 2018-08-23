@@ -1,42 +1,47 @@
 namespace Game {
 
-    export interface SceneInterface {
-
-        input(keys: any, down: boolean): void;
-        render(ctx: CanvasRenderingContext2D): void;
-        update(): void;
-
-    }
-
-    export class Scene implements SceneInterface {
+    export class Scene extends T3D.Item {
 
         hero: Hero;
         map: Map; // platform bit map
         row: number; // active row
         distance: number;
         platforms: Platform[];
-        hud: HTMLElement;
 
-        constructor() {
-            this.hud = document.getElementById('hud');
+        constructor(gl: WebGLRenderingContext) {
+            super();
+            this.map = new Map();
+            this.hero = new Hero(new T3D.Mesh(gl, 12), [.1, 1, .1, 30]);
+            this.add(this.hero);
+            this.platforms = [];
+            const mesh = new T3D.Mesh(gl, 4, [.65, .5, .4, -.5]);
+            const tokenMesh =  new T3D.Mesh(gl, 9, [.45, .3, .45, .5, .5, .5, .5, -.5, .45, -.5, .45, -.3], 30);
+            const blue = [.3, .3, 1, 30];
+            const yellow = [1, 1, .3, 30];
+            for (let i = 0; i < 33; i++) {
+                let platform = new Platform(mesh, blue);
+                platform.token = new T3D.Item(tokenMesh, yellow, [,1,,90,,,.5,.1,.5]);
+                platform.add(platform.token);
+                this.platforms.push(platform);
+                this.add(platform);
+            }
             this.init();
         }
 
         init() {
-            this.hero = new Hero();
-            this.map = new Map();
             this.row = 9;
             this.distance = 0;
-            this.platforms = [];
+            this.hero.init();
+            let i = 0;
             for (let z = -9; z < 2; z++) {
                 for (let x = -1; x <= 1; x++) {
-                    let platform = new Platform();
-                    platform.token.active = false;
+                    let platform = this.platforms[i++];
+                    platform.transform.rotate.y = 45;
                     platform.transform.translate.set(x, -1, z);
-                    this.platforms.push(platform);
+                    platform.token.active = false;
+                    platform.active = true;
                 }
             }
-            Rand.seed = 42;
         }
 
         input(keys: any, down: boolean): void {
@@ -59,27 +64,6 @@ namespace Game {
             if (keys.Space) {
                 hero.boost();
             }
-        }
-        
-        render(ctx: CanvasRenderingContext2D): void {
-            let hero = this.hero,
-                under = hero.transform.translate.y < -.5,
-                scale = Math.round(ctx.canvas.height / 11);
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            ctx.save();
-            ctx.translate(Math.round(ctx.canvas.width / 2), Math.round(ctx.canvas.height / 1.2));
-            ctx.scale(scale, scale);
-            if (under) {
-                hero.render(ctx);
-            }
-            this.platforms.forEach((platform, i) => {
-                platform.render(ctx);
-            });
-            if (!under) {
-                hero.render(ctx);
-            }
-            ctx.restore();
-            this.hud.textContent = `Distance: ${hero.distance.toFixed(2)}\nTokens: ${hero.tokens}`;
         }
 
         updateIndex(speed:number): number {

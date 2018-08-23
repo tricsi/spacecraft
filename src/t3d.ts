@@ -435,10 +435,11 @@ namespace T3D {
      */
     export class Mesh {
 
-        verts: Array<number> = [];
-        normals: Array<number> = [];
+        verts: WebGLBuffer;
+        normals: WebGLBuffer;
+        length: number;
 
-        constructor(divide: number, path: Array<number> = [], smooth: number = 0, angle: number=360) {
+        constructor(gl: WebGLRenderingContext, divide: number, path: Array<number> = [], smooth: number = 0, angle: number=360) {
             if (divide < 2) {
                 return;
             }
@@ -448,11 +449,20 @@ namespace T3D {
             const verts: Array<Vert> = this.createVerts(divide, path, 0, angle);
             const faces: Array<Face> = this.createFaces(verts, divide, path.length / 2);
             const cos = Math.cos(smooth * RAD_SCALE);
+            const vertData = [];
+            const normalData = [];
             faces.forEach((face: Face) => {
                 face.calcNormals(cos)
-                    .pushVerts(this.verts)
-                    .pushNormals(this.normals);
+                    .pushVerts(vertData)
+                    .pushNormals(normalData);
             });
+            this.verts = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.verts);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertData), gl.STATIC_DRAW);
+            this.normals = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.normals);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normalData), gl.STATIC_DRAW);
+            this.length = vertData.length / 3;
         }
 
         private sphere(divide: number) {
@@ -575,15 +585,13 @@ namespace T3D {
             return shader;
         }
 
-        attrib(name: string, values: Array<number>, size: number): Shader {
+        attrib(name: string, values: WebGLBuffer, size: number): Shader {
             const gl = this.gl;
             if (!this.location[name]) {
                 this.location[name] = gl.getAttribLocation(this.program, name);
-                this.attribs[name] = gl.createBuffer();
             }
             const location = this.location[name];
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.attribs[name]);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(values), gl.STATIC_DRAW);
+            gl.bindBuffer(gl.ARRAY_BUFFER, values);
             gl.enableVertexAttribArray(location);
             gl.vertexAttribPointer(location, size, gl.FLOAT, false, 0, 0);
             return this;

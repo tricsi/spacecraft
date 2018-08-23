@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "2018 js13kgames.com entry.",
   "scripts": {
-    "build": "gulp"
+    "build": "gulp",
+    "start": "gulp watch"
   },
   "author": "@CsabaCsecskedi",
   "license": "MIT",
