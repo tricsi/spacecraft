@@ -3,6 +3,7 @@ namespace Game {
     export class Platform extends T3D.Item {
 
         token: T3D.Item;
+        fence: T3D.Item;
 
         update(speed: number): boolean {
             let pos = this.transform.translate,

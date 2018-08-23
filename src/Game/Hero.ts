@@ -29,12 +29,12 @@ namespace Game {
 
         jump() {
             if (!this.transform.translate.y) {
-                this.acc = .07;
+                this.acc = .015;
             }
         }
 
         boost() {
-            this.timer = 60;
+            this.timer = 75;
         }
 
         speedZ() {
@@ -48,11 +48,11 @@ namespace Game {
             if (!this.active) {
                 return;
             }
-            this.acc -= this.acc > -.02 ? .01 : 0;
+            this.acc -= this.acc > -.02 ? .001 : 0;
             let pos = this.transform.translate,
                 rotate = this.transform.rotate;
             pos.x += (this.x - pos.x) / 7;
-            rotate.z = 90 + (pos.x - this.x) * 20;
+            rotate.z = 90 + (pos.x - this.x) * 25;
             rotate.y = (rotate.y + this.speedZ()* 100) % 360;
             this.speed.y += this.acc;
             pos.y += this.speed.y;

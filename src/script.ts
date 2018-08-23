@@ -196,8 +196,8 @@ namespace Game {
     }
 
     on(window, 'load', () => {
-        camera.position.set(0, 1, 7);
-        camera.rotate.x = -1;
+        camera.position.set(0, .7, 5);
+        camera.rotate.x = -.85;
         gl.clearColor(0, 0, 0, 0);
         gl.enable(gl.CULL_FACE);
         gl.enable(gl.DEPTH_TEST);

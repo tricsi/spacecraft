@@ -11,17 +11,20 @@ namespace Game {
         constructor(gl: WebGLRenderingContext) {
             super();
             this.map = new Map();
-            this.hero = new Hero(new T3D.Mesh(gl, 10), [.1, 1, .1, 10]);
+            this.hero = new Hero(new T3D.Mesh(gl, 10), [.9, .9, .9, 10]);
             this.add(this.hero);
             this.platforms = [];
             const platfomMesh = new T3D.Mesh(gl, 4, [.65, .5, .2, -.5]);
             const tokenMesh =  new T3D.Mesh(gl, 9, [.45, .3, .45, .5, .5, .5, .5, -.5, .45, -.5, .45, -.3], 30);
+            const fenceMesh = new T3D.Mesh(gl, 6, [.1, .5, .1, -.5]);
             const blue = [.3, .3, 1, 30];
             const yellow = [1, 1, .3, 30];
+            const red = [1, .3, .3, 0];
             for (let i = 0; i < 33; i++) {
                 let platform = new Platform(platfomMesh, blue);
                 platform.token = new T3D.Item(tokenMesh, yellow, [,1,,90,,,.5,.1,.5]);
-                platform.add(platform.token);
+                platform.fence = new T3D.Item(fenceMesh, red, [,1,,-45,,90]);
+                platform.add(platform.token).add(platform.fence);
                 this.platforms.push(platform);
                 this.add(platform);
             }
@@ -38,6 +41,7 @@ namespace Game {
                     let platform = this.platforms[i++];
                     platform.transform.rotate.y = 45;
                     platform.transform.translate.set(x, -1, z);
+                    platform.fence.active =
                     platform.token.active = false;
                     platform.active = true;
                 }

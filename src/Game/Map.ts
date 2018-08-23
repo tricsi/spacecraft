@@ -21,7 +21,7 @@ namespace Game {
             } else {
                 this.platform = 7;
             }
-            this.token = Rand.get(7, 0) & this.platform;
+            this.token = Rand.get(6, 0) & this.platform;
         }
 
         update() {
