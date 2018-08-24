@@ -83,6 +83,7 @@ namespace Game {
                 hero = this.hero,
                 speed = hero.speedZ();
             hero.update();
+
             this.platforms.forEach((platform, i) => {
                 if (platform.update(speed)) {
                     platform.active = (this.map.platform >> (i % 3) & 1) > 0;
@@ -100,12 +101,17 @@ namespace Game {
             let pos = hero.transform.translate,
                 index = this.updateIndex(speed),
                 platform = this.platforms[index],
+                collide = platform.collider.intersect(hero.collider),
                 token = platform.token;
+            if (platform.active && collide) {
+                hero.transform.translate.add(collide);
+                hero.speed.y = 0;
+            }
             if (token.active) {
                 token.active = false;
                 hero.tokens++;
             }
-            hero.fall = !pos.y && !platform.active;
+            hero.fall = pos.y < -.5;
             hero.distance = this.distance;
         }
 

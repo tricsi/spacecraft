@@ -56,6 +56,14 @@ namespace T3D {
             return this;
         }
 
+        distance(vec: Vec3): number {
+            return Math.sqrt(
+                (this.x - vec.x) * (this.x - vec.x) +
+                (this.y - vec.y) * (this.y - vec.y) +
+                (this.z - vec.z) * (this.z - vec.z)
+            );
+        }
+
         dot(vec: Vec3): number {
             return this.x * vec.x + this.y * vec.y + this.z * vec.z;
         }
@@ -77,10 +85,12 @@ namespace T3D {
             return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
         }
 
-        scale(scale: any): Vec3 {
-            this.x *= scale;
-            this.y *= scale;
-            this.z *= scale;
+        scale(value: Vec3): Vec3;
+        scale(value: number): Vec3;
+        scale(value: any): Vec3 {
+            this.x *= value instanceof Vec3 ? value.x : value;
+            this.y *= value instanceof Vec3 ? value.y : value;
+            this.z *= value instanceof Vec3 ? value.z : value;
             return this;
         }
 
@@ -311,6 +321,58 @@ namespace T3D {
 
     }
 
+    export class Sphere {
+
+        pos: Vec3;
+
+        scale: number;
+
+        constructor(pos: Vec3, scale: number) {
+            this.pos = pos;
+            this.scale = scale;
+        }
+
+        intersect(other: Sphere): Vec3 {
+            let collide = null,
+                distance = this.pos.distance(other.pos),
+                scale = this.scale + other.scale;
+            if (distance < scale) {
+                collide = other.pos.clone().sub(this.pos).normalize().scale(scale - distance);
+            }
+            return collide;
+        }
+
+    }
+
+    export class Box {
+
+        pos: Vec3;
+
+        scale: Vec3;
+
+        constructor(pos: Vec3, scale: Vec3) {
+            this.pos = pos;
+            this.scale = scale;
+        }
+
+        intersect(other: Sphere) {
+            let pos = this.pos,
+                scale = this.scale.clone().scale(.5),
+                closest = new Vec3(
+                    Math.max(pos.x - scale.x, Math.min(other.pos.x, pos.x + scale.x)),
+                    Math.max(pos.y - scale.y, Math.min(other.pos.y, pos.y + scale.y)),
+                    Math.max(pos.z - scale.z, Math.min(other.pos.z, pos.z + scale.z))
+                ),
+                distance = closest.distance(other.pos),
+                collide = null;
+            if (distance < other.scale) {
+                collide = other.pos.clone().sub(closest).normalize().scale(other.scale - distance);
+            }
+            return collide;
+        }
+
+    }
+
     /**
      * Transform class
      */
@@ -335,6 +397,25 @@ namespace T3D {
             return this.parent
                 ? this.parent.matrix(matrix)
                 : matrix;
+        }
+
+        clone() {
+            const clone = new Transform();
+            clone.scale = this.scale.clone();
+            clone.rotate = this.rotate.clone();
+            clone.translate = this.translate.clone();
+            return clone;
+        }
+
+        local() {
+            if (!this.parent) {
+                return this.clone();
+            }
+            const local = this.parent.local();
+            local.scale.scale(this.scale);
+            local.rotate.add(this.rotate);
+            local.transform.add(this.rotate);
+            return local;
         }
 
     }

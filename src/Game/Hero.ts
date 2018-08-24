@@ -12,11 +12,15 @@ namespace Game {
         timer: number;
         tokens: number;
         distance: number;
+        collider: T3D.Sphere;
 
         init() {
+            const transform = new T3D.Transform(); 
+            transform.translate.y = 1;
+            transform.scale.set(.8, .8, .8);
             this.active = true;
-            this.transform = new T3D.Transform();
-            this.transform.scale.set(.8, .8, .8);
+            this.transform = transform;
+            this.collider = new T3D.Sphere(transform.translate, .4);
             this.x = 0;
             this.rad = .4;
             this.acc = -.02;
@@ -51,16 +55,12 @@ namespace Game {
             this.acc -= this.acc > -.02 ? .001 : 0;
             let pos = this.transform.translate,
                 rotate = this.transform.rotate;
-            pos.x += (this.x - pos.x) / 7;
             rotate.z = 90 + (pos.x - this.x) * 25;
             rotate.y = (rotate.y + this.speedZ()* 100) % 360;
             this.speed.y += this.acc;
+            pos.x += (this.x - pos.x) / 7;
             pos.y += this.speed.y;
-            if (pos.y < 0 && !this.fall) {
-                this.speed.y = 0;
-                pos.y = 0;
-            }
-            this.active =  pos.y > -10;
+            this.active = pos.y > -10;
         }
 
     }

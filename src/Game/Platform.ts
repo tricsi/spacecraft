@@ -4,6 +4,12 @@ namespace Game {
 
         token: T3D.Item;
         fence: T3D.Item;
+        collider: T3D.Box;
+
+        constructor(mesh?: T3D.Mesh, color?: Array<number>, transform?: Array<number>) {
+            super(mesh, color, transform);
+            this.collider = new T3D.Box(this.transform.translate, this.transform.scale);
+        }
 
         update(speed: number): boolean {
             let pos = this.transform.translate,
