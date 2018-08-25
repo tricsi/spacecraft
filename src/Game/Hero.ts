@@ -33,7 +33,7 @@ namespace Game {
         }
 
         update() {
-            this.speed.z += ((this.active ? (this.speedTime ? .12 : .06) : 0) - this.speed.z) / 20;
+            this.speed.z += ((this.active ? (this.speedTime ? .12 : .07) : 0) - this.speed.z) / 20;
             this.speedTime -= this.speedTime > 0 ? 1 : 0;
             this.scale += ((this.scaleTime ? .5 : .8) - this.scale) / 5;
             this.scaleTime -= this.scaleTime > 0 ? 1 : 0;

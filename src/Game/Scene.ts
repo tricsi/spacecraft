@@ -9,24 +9,23 @@ namespace Game {
         distance: number;
         platforms: Platform[];
 
-        constructor(gl: WebGLRenderingContext) {
+        constructor(gl: WebGLRenderingContext, map: Map) {
             super();
-            this.map = new Map();
+            this.map = map;
             this.hero = new Hero(new T3D.Mesh(gl, 10), [.9, .9, .9, 10]);
             this.add(this.hero);
             this.platforms = [];
-            let platfomMesh = new T3D.Mesh(gl, 4, [.65, .5, .65, -.5]),
+            let platfomMesh = new T3D.Mesh(gl, 4, [.55, .5, .65, .4, .65, -.4, .55, -.5]),
                 tokenMesh =  new T3D.Mesh(gl, 9, [.45, .3, .45, .5, .5, .5, .5, -.5, .45, -.5, .45, -.3], 30),
-                fenceMesh = new T3D.Mesh(gl, 6, [.1, .5, .1, -.5]),
                 blue = [.3, .3, 1, 30],
                 yellow = [1, 1, .3, 30],
                 red = [1, .3, .3, 0];
             for (let i = 0; i < 33; i++) {
                 let platform = new Platform(platfomMesh, blue),
                     token = new T3D.Item(tokenMesh, yellow, [,1,,90,,,.5,.1,.5]),
-                    fence = new T3D.Item(fenceMesh, red, [,1.2,,-45,,90]);
+                    fence = new T3D.Item(platfomMesh, red, [,1.8,,,,,,1.5]);
                 token.collider = new T3D.Sphere(token.transform);
-                fence.collider = new T3D.Box(fence.transform, new T3D.Vec3(1, .1, .1));
+                fence.collider = new T3D.Box(fence.transform);
                 platform.collider = new T3D.Box(platform.transform);
                 platform.token = token;
                 platform.fence = fence;
@@ -41,6 +40,7 @@ namespace Game {
             this.row = 9;
             this.distance = 0;
             this.hero.init();
+            this.map.init();
             let i = 0;
             for (let z = -9; z < 2; z++) {
                 for (let x = -1; x <= 1; x++) {
@@ -69,8 +69,8 @@ namespace Game {
                 hero.x++;
             }
             if ((keys.ArrowUp || keys.KeyW) && down) {
-                if (hero.collide.y) {
-                    hero.acc = .07;
+                if (hero.collide) {
+                    hero.acc = .066;
                 }
             }
             if ((keys.ArrowDown || keys.KeyS) && down) {
@@ -109,9 +109,12 @@ namespace Game {
 
             this.platforms.forEach((platform, i) => {
                 if (platform.update(speed)) {
-                    platform.active = (this.map.platform >> (i % 3) & 1) > 0;
-                    platform.token.active = (this.map.token >> (i % 3) & 1) > 0;
+                    let cfg = this.map.row[i % 3];
+                    platform.active = (cfg & 1) > 0;
+                    platform.transform.translate.y = (cfg & 2) > 0 ? 0 : -1;
+                    platform.token.active = (cfg & 4) > 0;
                     platform.token.transform.rotate.y = 0;
+                    platform.fence.active = (cfg & 8) > 0;
                     rotate = true;
                 }
             });
