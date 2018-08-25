@@ -188,7 +188,6 @@ namespace Game {
     function anim(): void {
         requestAnimationFrame(anim);
         scene.update();
-        camera.position.x = scene.hero.transform.translate.x;
         gl.clear(gl.COLOR_BUFFER_BIT);
         render(scene);
         render(scene, .02);

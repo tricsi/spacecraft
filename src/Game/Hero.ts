@@ -7,12 +7,12 @@ namespace Game {
         x: number;
         rad: number;
         acc: number;
-        fall: boolean;
         speed: T3D.Vec3;
         timer: number;
         tokens: number;
         distance: number;
         collider: T3D.Sphere;
+        collide: T3D.Vec3;
 
         init() {
             const transform = new T3D.Transform(); 
@@ -20,20 +20,19 @@ namespace Game {
             transform.scale.set(.8, .8, .8);
             this.active = true;
             this.transform = transform;
-            this.collider = new T3D.Sphere(transform.translate, .4);
+            this.collider = new T3D.Sphere(transform, .4);
             this.x = 0;
             this.rad = .4;
             this.acc = -.02;
-            this.fall = false;
-            this.speed = new T3D.Vec3(0, 0, .05);
+            this.speed = new T3D.Vec3(0, -.1, .05);
             this.timer = 0;
             this.tokens = 0;
             this.distance = 0;
         }
 
         jump() {
-            if (!this.transform.translate.y) {
-                this.acc = .015;
+            if (this.collide.y) {
+                this.acc = .07;
             }
         }
 
@@ -52,7 +51,7 @@ namespace Game {
             if (!this.active) {
                 return;
             }
-            this.acc -= this.acc > -.02 ? .001 : 0;
+            this.acc -= this.acc > -.02 ? .01 : 0;
             let pos = this.transform.translate,
                 rotate = this.transform.rotate;
             rotate.z = 90 + (pos.x - this.x) * 25;

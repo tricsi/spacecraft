@@ -4,12 +4,6 @@ namespace Game {
 
         token: T3D.Item;
         fence: T3D.Item;
-        collider: T3D.Box;
-
-        constructor(mesh?: T3D.Mesh, color?: Array<number>, transform?: Array<number>) {
-            super(mesh, color, transform);
-            this.collider = new T3D.Box(this.transform.translate, this.transform.scale);
-        }
 
         update(speed: number): boolean {
             let pos = this.transform.translate,
@@ -28,6 +22,23 @@ namespace Game {
             this.transform.scale.set(scale, scale, scale);
             rotate.y = (rotate.y + 1) % 360;
             return end;
+        }
+
+        intersect(hero: Hero) {
+            let token = this.token;
+            if (token.active && token.collider.intersect(hero.collider)) {
+                token.active = false;
+                hero.tokens++;
+            }
+            if (!this.active) {
+                return;
+            }
+            let collide = this.collider.intersect(hero.collider);
+            if (collide) {
+                hero.transform.translate.add(collide);
+                hero.speed.y += collide.y;
+            }
+            return collide;
         }
     }
 
