@@ -42,6 +42,10 @@ namespace T3D {
             return this;
         }
 
+        max(): number {
+            return Math.max(this.x, this.y, this.z);
+        }
+
         add(vec: Vec3): Vec3 {
             this.x += vec.x;
             this.y += vec.y;
@@ -321,62 +325,73 @@ namespace T3D {
 
     }
 
-    export interface Collider {
-
-        intersect(other: Sphere): Vec3;
-
-    }
-
-    export class Sphere implements Collider {
+    export abstract class Collider {
 
         transform: Transform;
 
-        scale: number;
+        scale: Vec3;
 
-        constructor(transform: Transform, scale: number) {
+        constructor(transform: Transform, scale?: Vec3) {
             this.transform = transform;
-            this.scale = scale;
+            this.scale = scale ? scale : transform.scale;
         }
+
+        getTranslate(): Vec3 {
+            let translate = this.transform.translate.clone(),
+                parent = this.transform.parent;
+            while (parent) {
+                translate.scale(parent.scale).add(parent.translate);
+                parent = parent.parent;
+            }
+            return translate;
+        }
+
+        getScale(): Vec3 {
+            let scale = this.scale.clone().scale(.5),
+                parent = this.transform.parent;
+            while (parent) {
+                scale.scale(parent.scale);
+                parent = parent.parent;
+            }
+            return scale;
+        }
+
+        abstract intersect(other: Sphere): Vec3;
+
+    }
+
+    export class Sphere extends Collider {
 
         intersect(other: Sphere): Vec3 {
             let collide = null,
-                local = this.transform.local(),
-                otherLocal = other.transform.local(),
-                distance = local.translate.distance(otherLocal.translate),
-                scale = this.scale + other.scale;
-            if (distance < scale) {
-                collide = otherLocal.translate.sub(local.translate).normalize().scale(scale - distance);
+                translate = this.getTranslate(),
+                otherTranslate = other.getTranslate(),
+                distance = translate.distance(otherTranslate),
+                minDistance = this.getScale().max() + other.getScale().max();
+            if (distance < minDistance) {
+                collide = otherTranslate.sub(translate).normalize().scale(minDistance - distance);
             }
             return collide;
         }
 
     }
 
-    export class Box implements Collider {
-
-        transform: Transform;
-
-        scale: Vec3;
-
-        constructor(transform: Transform, scale: Vec3) {
-            this.transform = transform;
-            this.scale = scale;
-        }
+    export class Box extends Collider {
 
         intersect(other: Sphere) {
-            let local = this.transform.local(),
-                otherLocal = other.transform.local(),
-                pos = local.translate,
-                scale = local.scale.scale(this.scale).scale(.5),
+            let pos = this.getTranslate(),
+                scale = this.getScale(),
+                otherPos = other.getTranslate(),
+                otherScale = other.getScale().max(),
                 closest = new Vec3(
-                    Math.max(pos.x - scale.x, Math.min(otherLocal.translate.x, pos.x + scale.x)),
-                    Math.max(pos.y - scale.y, Math.min(otherLocal.translate.y, pos.y + scale.y)),
-                    Math.max(pos.z - scale.z, Math.min(otherLocal.translate.z, pos.z + scale.z))
+                    Math.max(pos.x - scale.x, Math.min(otherPos.x, pos.x + scale.x)),
+                    Math.max(pos.y - scale.y, Math.min(otherPos.y, pos.y + scale.y)),
+                    Math.max(pos.z - scale.z, Math.min(otherPos.z, pos.z + scale.z))
                 ),
-                distance = closest.distance(otherLocal.translate),
+                distance = closest.distance(otherPos),
                 collide = null;
-            if (distance < other.scale) {
-                collide = otherLocal.translate.sub(closest).normalize().scale(other.scale - distance);
+            if (distance < otherScale) {
+                collide = otherPos.sub(closest).normalize().scale(otherScale - distance);
             }
             return collide;
         }
@@ -407,25 +422,6 @@ namespace T3D {
             return this.parent
                 ? this.parent.matrix(matrix)
                 : matrix;
-        }
-
-        clone() {
-            const clone = new Transform();
-            clone.scale = this.scale.clone();
-            clone.rotate = this.rotate.clone();
-            clone.translate = this.translate.clone();
-            return clone;
-        }
-
-        local() {
-            if (!this.parent) {
-                return this.clone();
-            }
-            const local = this.parent.local();
-            local.scale.scale(this.scale);
-            local.rotate.add(this.rotate);
-            local.translate.add(this.translate);
-            return local;
         }
 
     }
@@ -627,11 +623,10 @@ namespace T3D {
         childs: Array<Item> = [];
         active: boolean = true;
 
-        constructor(mesh?: Mesh, color?: Array<number>, transform?: Array<number>, collider?: Collider) {
+        constructor(mesh?: Mesh, color?: Array<number>, transform?: Array<number>) {
             this.mesh = mesh;
             this.color = color;
             this.transform = new Transform(transform);
-            this.collider = collider;
         }
 
         add(child) {

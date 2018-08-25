@@ -25,15 +25,23 @@ namespace Game {
         }
 
         intersect(hero: Hero) {
-            let token = this.token;
+            let token = this.token,
+                fence = this.fence,
+                collide;
             if (token.active && token.collider.intersect(hero.collider)) {
                 token.active = false;
                 hero.tokens++;
             }
+            if (fence.active) {
+                collide = fence.collider.intersect(hero.collider);
+                if (collide) {
+                    hero.transform.translate.add(collide);
+                }
+            }
             if (!this.active) {
                 return;
             }
-            let collide = this.collider.intersect(hero.collider);
+            collide = this.collider.intersect(hero.collider);
             if (collide) {
                 hero.transform.translate.add(collide);
                 hero.speed.y += collide.y;

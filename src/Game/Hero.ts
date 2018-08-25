@@ -15,12 +15,13 @@ namespace Game {
         collide: T3D.Vec3;
 
         init() {
-            const transform = new T3D.Transform(); 
-            transform.translate.y = 1;
+            const transform = this.transform; 
+            transform.translate.set(0, 2, 0);
             transform.scale.set(.8, .8, .8);
+            transform.rotate.set(0, 0, 0);
             this.active = true;
             this.transform = transform;
-            this.collider = new T3D.Sphere(transform, .4);
+            this.collider = new T3D.Sphere(transform);
             this.x = 0;
             this.rad = .4;
             this.acc = -.02;

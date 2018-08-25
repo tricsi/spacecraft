@@ -15,18 +15,19 @@ namespace Game {
             this.hero = new Hero(new T3D.Mesh(gl, 10), [.9, .9, .9, 10]);
             this.add(this.hero);
             this.platforms = [];
-            const platfomMesh = new T3D.Mesh(gl, 4, [.65, .5, .65, -.5]);
-            const tokenMesh =  new T3D.Mesh(gl, 9, [.45, .3, .45, .5, .5, .5, .5, -.5, .45, -.5, .45, -.3], 30);
-            const fenceMesh = new T3D.Mesh(gl, 6, [.1, .5, .1, -.5]);
-            const blue = [.3, .3, 1, 30];
-            const yellow = [1, 1, .3, 30];
-            const red = [1, .3, .3, 0];
+            let platfomMesh = new T3D.Mesh(gl, 4, [.65, .5, .65, -.5]),
+                tokenMesh =  new T3D.Mesh(gl, 9, [.45, .3, .45, .5, .5, .5, .5, -.5, .45, -.5, .45, -.3], 30),
+                fenceMesh = new T3D.Mesh(gl, 6, [.1, .5, .1, -.5]),
+                blue = [.3, .3, 1, 30],
+                yellow = [1, 1, .3, 30],
+                red = [1, .3, .3, 0];
             for (let i = 0; i < 33; i++) {
                 let platform = new Platform(platfomMesh, blue),
                     token = new T3D.Item(tokenMesh, yellow, [,1,,90,,,.5,.1,.5]),
                     fence = new T3D.Item(fenceMesh, red, [,1,,-45,,90]);
-                token.collider = new T3D.Sphere(token.transform, .25);
-                platform.collider = new T3D.Box(platform.transform, platform.transform.scale);
+                token.collider = new T3D.Sphere(token.transform);
+                fence.collider = new T3D.Box(fence.transform, new T3D.Vec3(1, .1, .1));
+                platform.collider = new T3D.Box(platform.transform);
                 platform.token = token;
                 platform.fence = fence;
                 platform.add(token).add(fence);
