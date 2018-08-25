@@ -191,7 +191,7 @@ namespace Game {
         gl.clear(gl.COLOR_BUFFER_BIT);
         render(scene);
         render(scene, .02);
-        hud.textContent = `Distance: ${scene.hero.distance.toFixed(2)}\nTokens: ${scene.hero.tokens}`;
+        hud.textContent = `Distance: ${scene.distance.toFixed(2)}\nTokens: ${scene.hero.tokens}`;
     }
 
     on(window, 'load', () => {

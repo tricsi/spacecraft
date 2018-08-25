@@ -24,7 +24,7 @@ namespace Game {
             for (let i = 0; i < 33; i++) {
                 let platform = new Platform(platfomMesh, blue),
                     token = new T3D.Item(tokenMesh, yellow, [,1,,90,,,.5,.1,.5]),
-                    fence = new T3D.Item(fenceMesh, red, [,1,,-45,,90]);
+                    fence = new T3D.Item(fenceMesh, red, [,1.2,,-45,,90]);
                 token.collider = new T3D.Sphere(token.transform);
                 fence.collider = new T3D.Box(fence.transform, new T3D.Vec3(1, .1, .1));
                 platform.collider = new T3D.Box(platform.transform);
@@ -69,10 +69,15 @@ namespace Game {
                 hero.x++;
             }
             if ((keys.ArrowUp || keys.KeyW) && down) {
-                hero.jump();
+                if (hero.collide.y) {
+                    hero.acc = .07;
+                }
+            }
+            if ((keys.ArrowDown || keys.KeyS) && down) {
+                hero.scaleTime = 40;
             }
             if (keys.Space) {
-                hero.boost();
+                hero.speedTime = 75;
             }
         }
 
@@ -97,15 +102,16 @@ namespace Game {
         }
 
         update(): void {
+            this.hero.update();
             let rotate = false,
                 hero = this.hero,
-                speed = hero.speedZ();
-            hero.update();
+                speed = hero.speed.z;
 
             this.platforms.forEach((platform, i) => {
                 if (platform.update(speed)) {
                     platform.active = (this.map.platform >> (i % 3) & 1) > 0;
                     platform.token.active = (this.map.token >> (i % 3) & 1) > 0;
+                    platform.token.transform.rotate.y = 0;
                     rotate = true;
                 }
             });
@@ -120,7 +126,6 @@ namespace Game {
                     platform = this.platforms[index];
                 platform.intersect(hero);
             });
-            hero.distance = this.distance;
         }
 
     }

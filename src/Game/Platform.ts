@@ -20,7 +20,7 @@ namespace Game {
                 scale = 2 - pos.z; 
             }
             this.transform.scale.set(scale, scale, scale);
-            rotate.y = (rotate.y + 1) % 360;
+            rotate.y = (rotate.y + 1.5) % 360;
             return end;
         }
 
