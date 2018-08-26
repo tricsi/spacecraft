@@ -32,10 +32,24 @@ namespace Game {
             this.tokens = 0;
         }
 
+        jump() {
+            if (this.collide) {
+                this.acc = .065;
+            }
+        }
+
+        boost() {
+            this.speedTime = 75;
+        }
+
+        dash() {
+            this.scaleTime = 40;
+        }
+
         update() {
             this.speed.z += ((this.active ? (this.speedTime ? .12 : .07) : 0) - this.speed.z) / 20;
             this.speedTime -= this.speedTime > 0 ? 1 : 0;
-            this.scale += ((this.scaleTime ? .5 : .8) - this.scale) / 5;
+            this.scale += ((this.scaleTime ? .6 : .8) - this.scale) / 5;
             this.scaleTime -= this.scaleTime > 0 ? 1 : 0;
             if (!this.active) {
                 return;
@@ -49,7 +63,7 @@ namespace Game {
             this.speed.y += this.acc;
             pos.x += (this.x - pos.x) / 7;
             pos.y += this.speed.y;
-            pos.z -= pos.z / 20;
+            pos.z -= pos.z / 30;
             this.active = pos.y > -10;
             this.transform.scale.set(scale, scale, scale);
         }

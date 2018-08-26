@@ -16,6 +16,7 @@ namespace Game {
             this.add(this.hero);
             this.platforms = [];
             let platfomMesh = new T3D.Mesh(gl, 4, [.55, .5, .65, .4, .65, -.4, .55, -.5]),
+                fenceMesh =  new T3D.Mesh(gl, 12, [.4, .5, .5, .4, .5, -.4, .4, -.5], 30),
                 tokenMesh =  new T3D.Mesh(gl, 9, [.45, .3, .45, .5, .5, .5, .5, -.5, .45, -.5, .45, -.3], 30),
                 blue = [.3, .3, 1, 30],
                 yellow = [1, 1, .3, 30],
@@ -23,7 +24,7 @@ namespace Game {
             for (let i = 0; i < 33; i++) {
                 let platform = new Platform(platfomMesh, blue),
                     token = new T3D.Item(tokenMesh, yellow, [,1,,90,,,.5,.1,.5]),
-                    fence = new T3D.Item(platfomMesh, red, [,1.8,,,,,,1.5]);
+                    fence = new T3D.Item(fenceMesh, red, [,1.8,,,,,,1.5]);
                 token.collider = new T3D.Sphere(token.transform);
                 fence.collider = new T3D.Box(fence.transform);
                 platform.collider = new T3D.Box(platform.transform);
@@ -69,15 +70,13 @@ namespace Game {
                 hero.x++;
             }
             if ((keys.ArrowUp || keys.KeyW) && down) {
-                if (hero.collide) {
-                    hero.acc = .066;
-                }
+               hero.jump();
             }
             if ((keys.ArrowDown || keys.KeyS) && down) {
-                hero.scaleTime = 40;
+                hero.dash();
             }
             if (keys.Space) {
-                hero.speedTime = 75;
+                hero.boost();
             }
         }
 
@@ -127,7 +126,7 @@ namespace Game {
             [-3, 3, -1, 1, -2, 2, -4, 4].forEach(add => {
                 let index = this.getIndex(add),
                     platform = this.platforms[index];
-                platform.intersect(hero);
+                platform.intersect(hero, add == 1 || add == -1);
             });
         }
 

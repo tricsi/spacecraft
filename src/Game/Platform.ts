@@ -24,7 +24,7 @@ namespace Game {
             return end;
         }
 
-        intersect(hero: Hero) {
+        intersect(hero: Hero, jump: boolean = false) {
             let token = this.token,
                 fence = this.fence,
                 collide;
@@ -35,7 +35,9 @@ namespace Game {
             if (fence.active) {
                 collide = fence.collider.intersect(hero.collider);
                 if (collide) {
+                    if (jump && collide.x) hero.jump();
                     hero.transform.translate.add(collide);
+                    hero.speed.y += collide.y;
                 }
             }
             if (!this.active) {
@@ -43,6 +45,7 @@ namespace Game {
             }
             collide = this.collider.intersect(hero.collider);
             if (collide) {
+                if (jump && collide.x) hero.jump();
                 hero.transform.translate.add(collide);
                 hero.speed.y += collide.y;
             }
