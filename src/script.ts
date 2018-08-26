@@ -35,13 +35,8 @@ namespace Game {
         time: number = new Date().getTime(),
         gl: WebGLRenderingContext = canvas.getContext('webgl'),
         scene: Scene = new Scene(gl, new Map('1393'+'4111'+'3510'+'3015'+'4717'+'4050'+'4515', 42)),
+        light: T3D.Vec3 = new T3D.Vec3(5, 15, 7),
         camera: T3D.Camera = new T3D.Camera(canvas.width / canvas.height),
-        light = {
-            position: new T3D.Vec3(5, 15, 3),
-            ambient: [.2, .2, .2],
-            diffuse: [.8, .8, .8],
-            specular: [.8, .8, .8]
-        },
         shader: T3D.Shader = new T3D.Shader(gl,
             'precision mediump float;' +
             'attribute vec3 aPos, aNorm;' +
@@ -61,12 +56,12 @@ namespace Game {
             'uniform mat4 uWorld;' +
             'uniform vec4 uColor;' +
             'uniform vec3 uLight;' +
-            'uniform vec3 uAmbient;' +
-            'uniform vec3 uDiffuse;' +
-            'uniform vec3 uSpecular;' +
             'uniform float uLevels;' +
             'varying vec4 vPos;' +
             'varying vec3 vNorm;' +
+            'vec3 uAmbient = vec3(.2, .2, .2);' +
+            'vec3 uDiffuse = vec3(.8, .8, .8);' +
+            'vec3 uSpecular = vec3(.8, .8, .8);' +
             'void main(void) {' +
                 'vec3 lightDir = normalize(uLight - vPos.xyz);' +
                 'vec3 normal = normalize(vNorm);' +
@@ -162,10 +157,7 @@ namespace Game {
             .uniform("uProj", camera.perspective().data)
             .uniform("uInverse", invert.transpose().data)
             .uniform("uColor", stroke ? [0, 0, 0, 1] : item.color)
-            .uniform("uLight", light.position.clone().sub(camera.position).toArray())
-            .uniform("uAmbient", light.ambient)
-            .uniform("uDiffuse", light.diffuse)
-            .uniform("uSpecular", light.specular)
+            .uniform("uLight", light.clone().sub(camera.position).toArray())
             .uniform("uStroke", stroke || 0)
             .uniform("uLevels", stroke ? 0 : 5);
         gl.drawArrays(gl.TRIANGLES, 0, item.mesh.length);
