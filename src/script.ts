@@ -92,8 +92,8 @@ namespace Game {
         let x: number = 0,
             y: number = 0,
             min: number = 20,
-            drag = false,
-            keys: any = {};
+            keys: boolean[] = [],
+            drag = false;
         on(document, 'touchstart', (e: TouchEvent) => {
             let touch = e.touches[0];
             x = touch.clientX;
@@ -105,57 +105,42 @@ namespace Game {
                 return;
             }
             let touch = e.touches[0];
-            if (!keys.ArrowRight && touch.clientX - x > min) {
-                keys.ArrowRight = true;
-                scene.input(keys, true);
+            if (!keys[39] && touch.clientX - x > min) {
+                keys[39] = true;
+                scene.input(39);
                 drag = false;
-            }
-            if (!keys.ArrowLeft && touch.clientX - x < -min) {
-                keys.ArrowLeft = true;
-                scene.input(keys, true);
+            } else if (!keys[37] && touch.clientX - x < -min) {
+                keys[37] = true;
+                scene.input(37);
                 drag = false;
-            }
-            if (!keys.ArrowDown && touch.clientY - y > min) {
-                keys.ArrowDown = true;
-                scene.input(keys, true);
+            } else if (!keys[40] && touch.clientY - y > min) {
+                keys[40] = true;
+                scene.input(40);
                 drag = false;
-            }
-            if (!keys.ArrowUp && touch.clientY - y < -min) {
-                keys.ArrowUp = true;
-                scene.input(keys, true);
+            } else if (!keys[38] && touch.clientY - y < -min) {
+                keys[38] = true;
+                scene.input(38);
                 drag = false;
             }
         });
         on(document, 'touchend', (e: TouchEvent) => {
             if (drag) {
-                keys.Space = true;
-                scene.input(keys, true);
+                keys[32] = true;
+                scene.input(32);
             }
-            keys.Space =
-            keys.ArrowRight =
-            keys.ArrowLeft =
-            keys.ArrowUp =
-            keys.ArrowDown =
+            keys[32] =
+            keys[37] =
+            keys[38] =
+            keys[39] =
+            keys[40] =
             drag = false;
-            scene.input(keys, false);
         });
         on(document, 'keydown', (e: KeyboardEvent) => {
-            if (!keys[e.code]) {
-                keys[e.code] = true;
-                keys[0] = keys.Enter || keys.Space || e.shiftKey || e.ctrlKey;
-                scene.input(keys, true);
-            }
-        });
-        on(document, 'keyup', (e: KeyboardEvent) => {
-            if (keys[e.code]) {
-                keys[e.code] = false;
-                keys[0] = keys[13] || keys[32] || e.shiftKey || e.ctrlKey;
-                scene.input(keys, false);
-            }
+            scene.input(e.keyCode);
         });
         on(window, 'resize', resize);
     }
-    
+
     function render(item: T3D.Item, stroke: number = 0) {
         item.childs.forEach(child => {
             render(child, stroke);
@@ -185,8 +170,8 @@ namespace Game {
         gl.drawArrays(gl.TRIANGLES, 0, item.mesh.length);
     }
 
-    function anim(): void {
-        requestAnimationFrame(anim);
+    function update(): void {
+        requestAnimationFrame(update);
         scene.update();
         gl.clear(gl.COLOR_BUFFER_BIT);
         render(scene);
@@ -202,6 +187,6 @@ namespace Game {
         gl.enable(gl.DEPTH_TEST);
         resize();
         bind();
-        anim();
+        update();
     });
 }

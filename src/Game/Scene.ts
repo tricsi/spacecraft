@@ -55,28 +55,29 @@ namespace Game {
             }
         }
 
-        input(keys: any, down: boolean): void {
+        input(key: number): void {
             const hero = this.hero;
             if (!hero.active) {
-                if (keys.Space) {
+                if (key === 32) {
                     this.init();
                 }
                 return;
             }
-            if ((keys.ArrowLeft || keys.KeyA) && down && hero.x >= 0) {
-                hero.x--;
-            }
-            if ((keys.ArrowRight || keys.KeyD) && down && hero.x <= 0) {
-                hero.x++;
-            }
-            if ((keys.ArrowUp || keys.KeyW) && down) {
-               hero.jump();
-            }
-            if ((keys.ArrowDown || keys.KeyS) && down) {
-                hero.dash();
-            }
-            if (keys.Space) {
-                hero.boost();
+            switch (key) {
+                case 37:
+                    hero.left();
+                    break;
+                case 39:
+                    hero.right();
+                    break;
+                case 38:
+                    hero.jump();
+                    break;
+                case 40:
+                    hero.dash();
+                    break;
+                case 32:
+                    hero.boost();
             }
         }
 

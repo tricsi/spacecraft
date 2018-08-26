@@ -32,6 +32,18 @@ namespace Game {
             this.tokens = 0;
         }
 
+        left() {
+            if (this.x >= 0) {
+                this.x--;
+            }
+        }
+
+        right() {
+            if (this.x <= 0) {
+                this.x++;
+            }
+        }
+
         jump() {
             if (this.collide) {
                 this.acc = .065;
