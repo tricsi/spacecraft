@@ -34,7 +34,7 @@ namespace Game {
         hud: Element = $('#hud'),
         time: number = new Date().getTime(),
         gl: WebGLRenderingContext = canvas.getContext('webgl'),
-        scene: Scene = new Scene(gl, new Map('1393'+'4111'+'3510'+'3015'+'4717'+'4050'+'4515', 42)),
+        scene: Scene = new Scene(gl, new Map('1393'+'3111'+'4510'+'3515'+'4015'+'2111'+'4050', 42)),
         light: T3D.Vec3 = new T3D.Vec3(5, 15, 7),
         camera: T3D.Camera = new T3D.Camera(canvas.width / canvas.height),
         shader: T3D.Shader = new T3D.Shader(gl,
