@@ -32,6 +32,7 @@ namespace Game {
     
     let canvas: HTMLCanvasElement = <HTMLCanvasElement>$('#game'),
         hud: Element = $('#hud'),
+        time: number = new Date().getTime(),
         gl: WebGLRenderingContext = canvas.getContext('webgl'),
         scene: Scene = new Scene(gl, new Map('1393'+'4111'+'3510'+'3015'+'4717'+'4050'+'4515', 42)),
         camera: T3D.Camera = new T3D.Camera(canvas.width / canvas.height),
@@ -172,6 +173,11 @@ namespace Game {
 
     function update(): void {
         requestAnimationFrame(update);
+        let now = new Date().getTime();
+        if (now - time > 30) {
+            scene.update();
+        }
+        time = now;
         scene.update();
         gl.clear(gl.COLOR_BUFFER_BIT);
         render(scene);
