@@ -31,7 +31,6 @@ namespace Game {
     }
     
     let canvas: HTMLCanvasElement = <HTMLCanvasElement>$('#game'),
-        hud: Element = $('#hud'),
         menu: Menu = new Menu(),
         time: number = new Date().getTime(),
         gl: WebGLRenderingContext = canvas.getContext('webgl'),
@@ -133,6 +132,15 @@ namespace Game {
             drag = false;
         });
         on(document, 'keydown', (e: KeyboardEvent) => {
+            if (menu.active) {
+                if (e.keyCode == 32) {
+                    menu.hide();
+                    scene.init();
+                } else {
+                    menu.input(e.keyCode);
+                }
+                return;
+            }
             scene.input(e.keyCode);
         });
         on($('#play'), 'click', () => {
@@ -170,19 +178,18 @@ namespace Game {
 
     function update() {
         requestAnimationFrame(update);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        if (menu.active) {
+            return;
+        }
         let now = new Date().getTime();
         if (now - time > 30) {
             scene.update();
         }
         time = now;
-        gl.clear(gl.COLOR_BUFFER_BIT);
-        if (menu.active) {
-            return;
-        }
         scene.update();
         render(scene);
         render(scene, .02);
-        hud.textContent = `Distance: ${scene.distance.toFixed(2)}\nTokens: ${scene.hero.tokens}`;
         if (!scene.hero.active) {
             menu.show();
         }

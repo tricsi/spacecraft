@@ -12,12 +12,13 @@ namespace Game {
         scale: number;
         scaleTime: number;
         tokens: number;
+        distance: number;
         collider: T3D.Sphere;
         collide: T3D.Vec3;
 
         init() {
             const transform = this.transform; 
-            transform.translate.set(0, 2, 2);
+            transform.translate.set(0, 3, 2);
             transform.rotate.set(0, 0, 0);
             this.active = true;
             this.transform = transform;
@@ -30,6 +31,7 @@ namespace Game {
             this.scale = .8;
             this.scaleTime = 0;
             this.tokens = 0;
+            this.distance = 0;
         }
 
         left() {
@@ -59,7 +61,8 @@ namespace Game {
         }
 
         update() {
-            this.speed.z += ((this.active ? (this.speedTime ? .12 : .07) : 0) - this.speed.z) / 20;
+            let speed = (this.speedTime ? .15 : .1) + Math.min(this.distance / 10000, .05);
+            this.speed.z += ((this.active ? speed : 0) - this.speed.z) / 20;
             this.speedTime -= this.speedTime > 0 ? 1 : 0;
             this.scale += ((this.scaleTime ? .6 : .8) - this.scale) / 5;
             this.scaleTime -= this.scaleTime > 0 ? 1 : 0;

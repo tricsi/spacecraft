@@ -4,14 +4,15 @@ namespace Game {
 
         hero: Hero;
         map: Map; // platform bit map
+        hud: Element; // hud element
         row: number; // active row
         index: number; // active platform
-        distance: number;
         platforms: Platform[];
 
         constructor(gl: WebGLRenderingContext, map: Map) {
             super();
             this.map = map;
+            this.hud = $('#hud'),
             this.hero = new Hero(new T3D.Mesh(gl, 10), [.9, .9, .9, 10]);
             this.add(this.hero);
             this.platforms = [];
@@ -39,7 +40,6 @@ namespace Game {
 
         init() {
             this.row = 9;
-            this.distance = 0;
             this.hero.init();
             this.map.init();
             let i = 0;
@@ -57,12 +57,6 @@ namespace Game {
 
         input(key: number): void {
             const hero = this.hero;
-            if (!hero.active) {
-                if (key === 32) {
-                    this.init();
-                }
-                return;
-            }
             switch (key) {
                 case 37:
                     hero.left();
@@ -121,7 +115,6 @@ namespace Game {
             if (rotate) {
                 this.map.update();
             }
-            this.distance += speed;
             this.updateRow(speed);
             hero.collide = this.platforms[this.getIndex()].intersect(hero);
             [-3, 3, -1, 1, -2, 2, -4, 4].forEach(add => {
@@ -129,6 +122,8 @@ namespace Game {
                     platform = this.platforms[index];
                 platform.intersect(hero, add == 1 || add == -1);
             });
+            hero.distance += speed;
+            this.hud.textContent = `Score: ${hero.tokens}`;
         }
 
     }

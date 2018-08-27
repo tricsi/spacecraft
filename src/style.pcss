@@ -1,4 +1,4 @@
-body, html, canvas, div, ul, li {
+body, html, canvas, ul, li, #ctrl {
     width: 100%;
     height: 100%;
     margin: 0;
@@ -23,9 +23,9 @@ body, html {
 
 li {
     position: absolute;
+    text-align: center;
     opacity: 1;
     transition: opacity 1s;
-    text-align: center;
 }
 
 li.hide {
@@ -33,7 +33,7 @@ li.hide {
 }
 
 h2 {
-    margin: 50px 0 20px;
+    margin: 100px 0 20px;
 }
 
 #ctrl {
@@ -60,9 +60,14 @@ a.disabled {
     border-color: #ccc;
 }
 
+#hud,
 .play a,
 .play h2 {
-    display: none;
+    visibility: hidden;
+}
+
+.play #hud {
+    visibility: visible;
 }
 
 * {

@@ -20,6 +20,20 @@ namespace Game {
             this.bind();
         }
 
+        input(key: number): void {
+            if (!this.active) {
+                return;
+            }
+            switch (key) {
+                case 37:
+                    this.prev();
+                    break;
+                case 39:
+                    this.next();
+                    break;
+            }
+        }
+
         prev() {
             if (this.left.className) {
                 return;
