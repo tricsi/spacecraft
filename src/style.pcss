@@ -1,4 +1,4 @@
-body, html, canvas {
+body, html, canvas, div, ul, li {
     width: 100%;
     height: 100%;
     margin: 0;
@@ -8,13 +8,70 @@ body, html, canvas {
 body, html {
     overflow: hidden;
     background-color: #000;
-    background-image: radial-gradient(circle at 50% 100%, #300, #510 50%, #630 60%, #003 61%, #000 80%);
-    color: #0f0;
-    font-size: 15px;
-    font-weight: bold;
+    color: #ddd;
+    font: bold 18px Arial, Helvetica, sans-serif;
+}
+
+#hud, #game, #planet, #ctrl {
+    position: absolute;
+    top: 0;
 }
 
 #hud {
-    position: absolute;
     margin: 20px;
+}
+
+li {
+    position: absolute;
+    opacity: 1;
+    transition: opacity 1s;
+    text-align: center;
+}
+
+li.hide {
+    opacity: 0;
+}
+
+h2 {
+    margin: 50px 0 20px;
+}
+
+#ctrl {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    text-align: center;
+}
+
+a {
+    width: 48px;
+    line-height: 48px;
+    color: #000;
+    background: #ddd;
+    border: 2px solid #333;
+    border-radius: 25px;
+    padding: 0 20px;
+    margin: 20px;
+    cursor: pointer;
+}
+
+a.disabled {
+    color: #999;
+    border-color: #ccc;
+}
+
+#game,
+.play a,
+.play h2 {
+    display: none;
+}
+
+.play #game {
+    display: block;
+}
+
+* {
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	-webkit-touch-callout: none;
+	user-select: none;
 }

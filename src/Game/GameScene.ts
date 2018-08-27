@@ -1,6 +1,6 @@
 namespace Game {
 
-    export class Scene extends T3D.Item {
+    export class GameScene extends T3D.Item {
 
         hero: Hero;
         map: Map; // platform bit map

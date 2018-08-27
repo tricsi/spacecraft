@@ -1,10 +1,13 @@
+/// <reference path="Game/MenuScene.ts"/>
+/// <reference path="Game/GameScene.ts"/>
+
 namespace Game {
 
-    function $(query: string, element?: NodeSelector): Element {
+    export function $(query: string, element?: NodeSelector): Element {
         return (element || document).querySelector(query);
     }
 
-    function on(element: any, event: string, callback: EventListenerOrEventListenerObject) {
+    export function on(element: any, event: string, callback: EventListenerOrEventListenerObject) {
         element.addEventListener(event, callback, false);
     }
 
@@ -32,9 +35,10 @@ namespace Game {
     
     let canvas: HTMLCanvasElement = <HTMLCanvasElement>$('#game'),
         hud: Element = $('#hud'),
+        menu: MenuScene = new MenuScene(),
         time: number = new Date().getTime(),
         gl: WebGLRenderingContext = canvas.getContext('webgl'),
-        scene: Scene = new Scene(gl, new Map('1393'+'3111'+'4510'+'3515'+'4015'+'2111'+'4050', 42)),
+        scene: GameScene = new GameScene(gl, new Map('1393'+'3111'+'4510'+'3515'+'4015'+'2111'+'4050', 42)),
         light: T3D.Vec3 = new T3D.Vec3(5, 15, 7),
         camera: T3D.Camera = new T3D.Camera(canvas.width / canvas.height),
         shader: T3D.Shader = new T3D.Shader(gl,
@@ -132,6 +136,7 @@ namespace Game {
             drag = false;
         });
         on(document, 'keydown', (e: KeyboardEvent) => {
+            //e.preventDefault();
             scene.input(e.keyCode);
         });
         on(window, 'resize', resize);
