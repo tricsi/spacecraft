@@ -1,6 +1,6 @@
 namespace Game {
 
-    export class GameScene extends T3D.Item {
+    export class Scene extends T3D.Item {
 
         hero: Hero;
         map: Map; // platform bit map
@@ -101,7 +101,7 @@ namespace Game {
             return index;
         }
 
-        update(): void {
+        update() {
             this.hero.update();
             let rotate = false,
                 hero = this.hero,

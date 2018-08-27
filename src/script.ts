@@ -1,6 +1,3 @@
-/// <reference path="Game/MenuScene.ts"/>
-/// <reference path="Game/GameScene.ts"/>
-
 namespace Game {
 
     export function $(query: string, element?: NodeSelector): Element {
@@ -35,10 +32,10 @@ namespace Game {
     
     let canvas: HTMLCanvasElement = <HTMLCanvasElement>$('#game'),
         hud: Element = $('#hud'),
-        menu: MenuScene = new MenuScene(),
+        menu: Menu = new Menu(),
         time: number = new Date().getTime(),
         gl: WebGLRenderingContext = canvas.getContext('webgl'),
-        scene: GameScene = new GameScene(gl, new Map('1393'+'3111'+'4510'+'3515'+'4015'+'2111'+'4050', 42)),
+        scene: Scene = new Scene(gl, new Map('1393'+'3111'+'4510'+'3515'+'4015'+'2111'+'4050', 42)),
         light: T3D.Vec3 = new T3D.Vec3(5, 15, 7),
         camera: T3D.Camera = new T3D.Camera(canvas.width / canvas.height),
         shader: T3D.Shader = new T3D.Shader(gl,
@@ -136,8 +133,11 @@ namespace Game {
             drag = false;
         });
         on(document, 'keydown', (e: KeyboardEvent) => {
-            //e.preventDefault();
             scene.input(e.keyCode);
+        });
+        on($('#play'), 'click', () => {
+            menu.hide();
+            scene.init();
         });
         on(window, 'resize', resize);
     }
@@ -168,18 +168,24 @@ namespace Game {
         gl.drawArrays(gl.TRIANGLES, 0, item.mesh.length);
     }
 
-    function update(): void {
+    function update() {
         requestAnimationFrame(update);
         let now = new Date().getTime();
         if (now - time > 30) {
             scene.update();
         }
         time = now;
-        scene.update();
         gl.clear(gl.COLOR_BUFFER_BIT);
+        if (menu.active) {
+            return;
+        }
+        scene.update();
         render(scene);
         render(scene, .02);
         hud.textContent = `Distance: ${scene.distance.toFixed(2)}\nTokens: ${scene.hero.tokens}`;
+        if (!scene.hero.active) {
+            menu.show();
+        }
     }
 
     on(window, 'load', () => {
