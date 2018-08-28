@@ -34,7 +34,7 @@ namespace Game {
         menu: Menu = new Menu(),
         time: number = new Date().getTime(),
         gl: WebGLRenderingContext = canvas.getContext('webgl'),
-        scene: Scene = new Scene(gl, new Map('13d3'+'3111'+'4510'+'3515'+'4015'+'2111'+'4050'+'1797', 42)),
+        scene: Scene = new Scene(gl, new Map('4050'+'13d3'+'3111'+'4510'+'3515'+'4015'+'4111'+'1797', 42)),
         light: T3D.Vec3 = new T3D.Vec3(5, 15, 7),
         camera: T3D.Camera = new T3D.Camera(canvas.width / canvas.height),
         shader: T3D.Shader = new T3D.Shader(gl,
@@ -191,13 +191,14 @@ namespace Game {
         render(scene);
         render(scene, .02);
         if (scene.ended()) {
+            menu.score(scene.score());
             menu.show();
         }
     }
 
     on(window, 'load', () => {
-        camera.position.set(0, .7, 5);
-        camera.rotate.x = -.85;
+        camera.position.set(0, .2, 5);
+        camera.rotate.x = -.7;
         gl.clearColor(0, 0, 0, 0);
         gl.enable(gl.CULL_FACE);
         gl.enable(gl.DEPTH_TEST);

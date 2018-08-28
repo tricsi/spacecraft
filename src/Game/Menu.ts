@@ -2,22 +2,29 @@ namespace Game {
 
     export class Menu {
 
-        body: HTMLElement;
-        left: HTMLElement;
-        right: HTMLElement;
+        body: Element;
+        left: Element;
+        right: Element;
         index: number;
         active: boolean;
-        planets: NodeListOf<HTMLElement>;
+        scores: NodeListOf<Element>;
+        planets: NodeListOf<Element>;
 
         constructor() {
-            this.body = <HTMLElement>$('body');
-            this.left = <HTMLElement>$('#left');
-            this.right = <HTMLElement>$('#right');
-            this.planets = <NodeListOf<HTMLElement>>document.getElementsByTagName('LI');
+            this.body = $('body');
+            this.left = $('#left');
+            this.right = $('#right');
+            this.scores = document.getElementsByTagName('H3');
+            this.planets = document.getElementsByTagName('LI');
             this.index = this.planets.length - 1;
             this.left.className = 'disabled';
             this.active = true;
             this.bind();
+        }
+
+        score(value: number) {
+            let index = this.index * 2;
+            this.scores.item(index + 1).textContent = `Score: ${value}`;
         }
 
         input(key: number): void {

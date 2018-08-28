@@ -4,7 +4,7 @@ namespace Game {
 
         hero: Hero;
         map: Map; // platform bit map
-        hud: Element; // hud element
+        hud: NodeListOf<Element>; // hud element
         row: number; // active row
         index: number; // active platform
         platforms: Platform[];
@@ -12,7 +12,7 @@ namespace Game {
         constructor(gl: WebGLRenderingContext, map: Map) {
             super();
             this.map = map;
-            this.hud = $('#hud'),
+            this.hud = $('#hud').getElementsByTagName('DIV'),
             this.hero = new Hero(new T3D.Mesh(gl, 10), [.9, .9, .9, 10]);
             this.add(this.hero);
             this.platforms = [];
@@ -64,6 +64,10 @@ namespace Game {
 
         ended() {
             return Math.abs(this.hero.speed.z) < .01;
+        }
+
+        score() {
+            return Math.round(this.hero.tokens * 10 + this.hero.distance);
         }
 
         input(key: number): void {
@@ -141,7 +145,8 @@ namespace Game {
                 platform.intersect(hero, add == 1 || add == -1);
             });
             hero.distance += speed;
-            this.hud.textContent = `Score: ${hero.tokens}`;
+            this.hud.item(2).textContent = hero.tokens.toString();
+            this.hud.item(3).textContent = hero.distance.toFixed(0);
         }
 
     }

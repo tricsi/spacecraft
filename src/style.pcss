@@ -10,37 +10,55 @@ body, html {
     background-color: #000;
     color: #ddd;
     font: bold 18px Arial, Helvetica, sans-serif;
+    text-align: center;
 }
 
 #hud, #game, #planet, #ctrl {
     position: absolute;
     top: 0;
+    left: 0;
 }
 
 #hud {
-    margin: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%;
+
+    & div {
+        width: 40%;
+        margin-top: 10px;
+    }
 }
 
-li {
-    position: absolute;
-    text-align: center;
-    opacity: 1;
-    transition: opacity 1s;
-}
+ul {
 
-li.hide {
-    opacity: 0;
+    & li {
+        position: absolute;
+        opacity: 1;
+        transition: opacity 1s;
+    }
+
+    & li.hide {
+        opacity: 0;
+    }
+
 }
 
 h2 {
-    margin: 100px 0 20px;
+    margin: 130px 0 30px;
+    font-size: 32px;
+}
+
+h3 {
+    margin: 10px 0;
+    font-size: 20px;
 }
 
 #ctrl {
     display: flex;
     align-items: flex-end;
-    justify-content: space-between;
-    text-align: center;
+    justify-content: space-around;
 }
 
 a {
@@ -62,7 +80,8 @@ a.disabled {
 
 #hud,
 .play a,
-.play h2 {
+.play h2,
+.play h3 {
     visibility: hidden;
 }
 
