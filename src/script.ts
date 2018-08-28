@@ -34,7 +34,7 @@ namespace Game {
         menu: Menu = new Menu(),
         time: number = new Date().getTime(),
         gl: WebGLRenderingContext = canvas.getContext('webgl'),
-        scene: Scene = new Scene(gl, new Map('1393'+'3111'+'4510'+'3515'+'4015'+'2111'+'4050', 42)),
+        scene: Scene = new Scene(gl, new Map('13d3'+'3111'+'4510'+'3515'+'4015'+'2111'+'4050'+'1797', 42)),
         light: T3D.Vec3 = new T3D.Vec3(5, 15, 7),
         camera: T3D.Camera = new T3D.Camera(canvas.width / canvas.height),
         shader: T3D.Shader = new T3D.Shader(gl,
@@ -171,7 +171,7 @@ namespace Game {
             .uniform("uInverse", invert.transpose().data)
             .uniform("uColor", stroke ? [0, 0, 0, 1] : item.color)
             .uniform("uLight", light.clone().sub(camera.position).toArray())
-            .uniform("uStroke", stroke || 0)
+            .uniform("uStroke", stroke + item.stroke)
             .uniform("uLevels", stroke ? 0 : 5);
         gl.drawArrays(gl.TRIANGLES, 0, item.mesh.length);
     }
@@ -190,7 +190,7 @@ namespace Game {
         scene.update();
         render(scene);
         render(scene, .02);
-        if (!scene.hero.active) {
+        if (scene.ended()) {
             menu.show();
         }
     }

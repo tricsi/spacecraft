@@ -622,6 +622,7 @@ namespace T3D {
         collider: Collider;
         childs: Array<Item> = [];
         active: boolean = true;
+        stroke: number = 0;
 
         constructor(mesh?: Mesh, color?: Array<number>, transform?: Array<number>) {
             this.mesh = mesh;

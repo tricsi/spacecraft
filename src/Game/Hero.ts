@@ -15,6 +15,7 @@ namespace Game {
         distance: number;
         collider: T3D.Sphere;
         collide: T3D.Vec3;
+        explode: number;
 
         init() {
             const transform = this.transform; 
@@ -26,12 +27,14 @@ namespace Game {
             this.x = 0;
             this.rad = .4;
             this.acc = -.02;
-            this.speed = new T3D.Vec3();
+            this.speed = new T3D.Vec3(0, 0, .1);
             this.speedTime = 0;
             this.scale = .8;
             this.scaleTime = 0;
             this.tokens = 0;
             this.distance = 0;
+            this.explode = 0;
+            this.stroke = 0;
         }
 
         left() {
@@ -61,25 +64,26 @@ namespace Game {
         }
 
         update() {
-            let speed = (this.speedTime ? .15 : .1) + Math.min(this.distance / 10000, .05);
+            let pos = this.transform.translate,
+                scale = this.scale,
+                rotate = this.transform.rotate,
+                speed = (this.speedTime ? .18 : .1) + Math.min(this.distance / 10000, .05);
             this.speed.z += ((this.active ? speed : 0) - this.speed.z) / 20;
             this.speedTime -= this.speedTime > 0 ? 1 : 0;
             this.scale += ((this.scaleTime ? .6 : .8) - this.scale) / 5;
             this.scaleTime -= this.scaleTime > 0 ? 1 : 0;
-            if (!this.active) {
+            this.stroke += (this.explode - this.stroke) / 25;
+            this.active = pos.y > -10 && this.stroke < 6;
+            if (!this.active || this.stroke) {
                 return;
             }
             this.acc -= this.acc > -.02 ? .01 : 0;
-            let pos = this.transform.translate,
-                scale = this.scale,
-                rotate = this.transform.rotate;
             rotate.z = 90 + (pos.x - this.x) * 25;
             rotate.y = (rotate.y + this.speed.z * 100) % 360;
             this.speed.y += this.acc;
             pos.x += (this.x - pos.x) / 7;
             pos.y += this.speed.y;
             pos.z -= pos.z / 30;
-            this.active = pos.y > -10;
             this.transform.scale.set(scale, scale, scale);
         }
 
