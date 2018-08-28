@@ -145,7 +145,7 @@ namespace Game {
                 platform.intersect(hero, add == 1 || add == -1);
             });
             hero.distance += speed;
-            this.hud.item(2).textContent = hero.tokens.toString();
+            this.hud.item(2).textContent = '' + this.score();
             this.hud.item(3).textContent = hero.distance.toFixed(0);
         }
 

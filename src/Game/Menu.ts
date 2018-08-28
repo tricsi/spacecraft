@@ -1,5 +1,7 @@
 namespace Game {
 
+    const STORE = 'offliner_hi';
+
     export class Menu {
 
         body: Element;
@@ -9,6 +11,7 @@ namespace Game {
         active: boolean;
         scores: NodeListOf<Element>;
         planets: NodeListOf<Element>;
+        storage: number[];
 
         constructor() {
             this.body = $('body');
@@ -18,13 +21,25 @@ namespace Game {
             this.planets = document.getElementsByTagName('LI');
             this.index = this.planets.length - 1;
             this.left.className = 'disabled';
+            this.storage = JSON.parse(localStorage.getItem(STORE)) || [];
             this.active = true;
+            for (let i = 0; i < this.planets.length; i++) {
+                if (!this.storage[i]) continue;
+                this.scores.item(i * 2).textContent = 'High Score: ' + this.storage[i];
+            }
             this.bind();
         }
 
         score(value: number) {
-            let index = this.index * 2;
-            this.scores.item(index + 1).textContent = `Score: ${value}`;
+            let index = this.index * 2,
+                high = this.storage[this.index] || 0, 
+                beat = high < value;
+            if (beat) {
+                this.storage[this.index] = value;
+                localStorage.setItem(STORE, JSON.stringify(this.storage));
+            }
+            this.scores.item(index).textContent = beat ? 'New High Score!' : 'High Score: ' + high;
+            this.scores.item(index + 1).textContent = (beat ? '' : 'Score: ') + value;
         }
 
         input(key: number): void {
