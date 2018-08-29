@@ -9,36 +9,15 @@ namespace Game {
         index: number; // active platform
         platforms: Platform[];
 
-        constructor(gl: WebGLRenderingContext, map: Map) {
+        constructor(hero: Hero, factory, map: string) {
             super();
-            this.map = map;
+            this.map = new Map(map);
             this.hud = $('#hud').getElementsByTagName('DIV'),
-            this.hero = new Hero(new T3D.Mesh(gl, 10), [.9, .9, .9, 10]);
+            this.hero = hero;
             this.add(this.hero);
             this.platforms = [];
-            let blockMesh = new T3D.Mesh(gl, 4, [.55, .5, .65, .4, .65, -.4, .55, -.5]),
-                fenceMesh =  new T3D.Mesh(gl, 12, [.4, .5, .5, .4, .5, -.4, .4, -.5], 30),
-                tokenMesh =  new T3D.Mesh(gl, 9, [.45, .3, .45, .5, .5, .5, .5, -.5, .45, -.5, .45, -.3], 30),
-                enemyMesh = new T3D.Mesh(gl, 4),
-                purple = [1, .3, 1, 30],
-                blue = [.3, .3, 1, 30],
-                yellow = [1, 1, .3, 30],
-                red = [1, .3, .3, 0];
             for (let i = 0; i < 33; i++) {
-                let platform = new Platform(),
-                    block = new T3D.Item(blockMesh, blue, [,,,,45]),
-                    enemy = new Enemy(enemyMesh, purple, [,1,,,,,.7,.7,.7]),
-                    token = new T3D.Item(tokenMesh, yellow, [,1,,90,,,.5,.1,.5]),
-                    fence = new T3D.Item(fenceMesh, red, [,1.5,,,,,.8,1,.8]);
-                block.collider = new T3D.Box(block.transform);
-                enemy.collider = new T3D.Sphere(enemy.transform);
-                token.collider = new T3D.Sphere(token.transform);
-                fence.collider = new T3D.Box(fence.transform);
-                platform.block = block;
-                platform.token = token;
-                platform.fence = fence;
-                platform.enemy = enemy;
-                platform.add(block).add(token).add(fence).add(enemy);
+                let platform = factory();
                 this.platforms.push(platform);
                 this.add(platform);
             }

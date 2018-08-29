@@ -71,7 +71,7 @@ namespace Game {
             let pos = this.transform.translate,
                 scale = this.scale,
                 rotate = this.transform.rotate,
-                speed = (this.speedTime ? .05 : .1) + Math.min(this.distance / 10000, .05);
+                speed = (this.speedTime ? .12 : .06) + Math.min(this.distance / 10000, .05);
             this.speed.z += ((this.active ? speed : 0) - this.speed.z) / 20;
             this.speedTime -= this.speedTime > 0 ? 1 : 0;
             this.scale += ((this.scaleTime ? .5 : .8) - this.scale) / 5;

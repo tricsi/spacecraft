@@ -37,7 +37,6 @@ namespace Game {
         menu: Menu = new Menu(),
         time: number = new Date().getTime(),
         gl: WebGLRenderingContext = canvas.getContext('webgl'),
-        scene: Scene = new Scene(gl, new Map('4111|211125052111|301521513510|205120052051|311117973111|611111d1')),
         light: T3D.Vec3 = new T3D.Vec3(5, 15, 7),
         camera: T3D.Camera = new T3D.Camera(canvas.width / canvas.height),
         shader: T3D.Shader = new T3D.Shader(gl,
@@ -78,7 +77,38 @@ namespace Game {
                 'if (uLevels > 1.0) { color = floor(color * uLevels) * (1.0 / uLevels); }' +
                 'gl_FragColor = vec4(color, 1);' +
             '}'
-        );
+        ),
+        mesh = {
+            hero: new T3D.Mesh(gl, 10),
+            block: new T3D.Mesh(gl, 4, [.55, .5, .65, .4, .65, -.4, .55, -.5]),
+            fence: new T3D.Mesh(gl, 12, [.4, .5, .5, .4, .5, -.4, .4, -.5], 30),
+            token: new T3D.Mesh(gl, 9, [.45, .3, .45, .5, .5, .5, .5, -.5, .45, -.5, .45, -.3], 30),
+            enemy: new T3D.Mesh(gl, 4),
+        },
+        color = {
+            white: [.9, .9, .9, 10],
+            purple: [1, .3, 1, 30],
+            blue: [.3, .3, 1, 30],
+            yellow: [1, 1, .3, 30],
+            red: [1, .3, .3, 0]
+        },
+        hero: Hero = new Hero(mesh.hero, color.white),
+        scene: Scene = new Scene(hero, () => {
+            let platform = new Platform(),
+                    block = new T3D.Item(mesh.block, color.blue, [,,,,45]),
+                    enemy = new Enemy(mesh.enemy, color.purple, [,1,,,,,.7,.7,.7]),
+                    token = new T3D.Item(mesh.token, color.yellow, [,1,,90,,,.5,.1,.5]),
+                    fence = new T3D.Item(mesh.fence, color.red, [,1.5,,,,,.8,1,.8]);
+                block.collider = new T3D.Box(block.transform);
+                enemy.collider = new T3D.Sphere(enemy.transform);
+                token.collider = new T3D.Sphere(token.transform);
+                fence.collider = new T3D.Box(fence.transform);
+                platform.block = block;
+                platform.token = token;
+                platform.fence = fence;
+                platform.enemy = enemy;
+                return platform.add(block).add(token).add(fence).add(enemy);
+        }, '4111|211125052111|301521513510|205120052051|311113973111|611111d1');
 
     function resize() {
         canvas.width = canvas.clientWidth;
