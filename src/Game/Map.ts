@@ -1,43 +1,57 @@
 namespace Game {
 
-    /**
-     * Platform config
-     * 1 2 4 8
-     * | | | +- Fence
-     * | | +--- Token
-     * | +----- Scale
-     * +------- Active
-     */
     export class Map {
 
+        mirror: boolean;
         config: string[];
         count: number;
+        data: string[];
         row: number[];
-        flop: number;
-        seed: number;
         length: number;
+        steps: number;
+        step: number;
+        min: number;
 
-        constructor(config: string, seed: number) {
-            this.config = config.match(/.{1,4}/g);
-            this.length = Math.floor(this.config.length / 2) - 1;
-            this.seed = seed;
+        constructor(config: string, lenght: number = 4, steps: number = 50) {
+            this.config = config.split('|');
+            this.length = lenght;
+            this.steps = steps;
         }
 
         init() {
-            Rand.seed = this.seed;
             this.count = 0;
-            this.flop = 0;
+            this.data = [];
+            this.step = 0;
+            this.min = 0;
             this.update();
         }
 
+        max() {
+            let max = this.min + this.length,
+                length = this.config.length;
+            return max < length ? max : length - 1;
+        }
+
         update() {
+            if (++this.step > this.steps) {
+                this.step = 0;
+                if (this.min + this.length < this.config.length - 1) { 
+                    this.min++;
+                }
+            }
             if (--this.count > 0) {
                 return;
             }
-            let index  = Rand.get(this.length, 0, true) * 2 + this.flop;
-            this.row = this.config[index].split('').map(c => parseInt(c, 16));
+            if (!this.data.length) {
+                this.mirror = Rand.get() > .5;
+                let index = Rand.get(this.max(), this.min, true);
+                this.data = this.config[index].match(/.{1,4}/g);
+            }
+            this.row = this.data.shift().split('').map(c => parseInt(c, 36));
             this.count = this.row.shift();
-            this.flop = ++this.flop % 2;
+            if (this.mirror) {
+                this.row.reverse();
+            }
         }
 
     }

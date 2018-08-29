@@ -23,6 +23,9 @@ namespace Game {
         static seed: number = Math.random();
 
         static get(max: number = 1, min: number = 0, round: boolean = true): number {
+            if (max <= min) {
+                return max;
+            }
             Rand.seed = (Rand.seed * 9301 + 49297) % 233280;
             let value = min + (Rand.seed / 233280) * (max - min);
             return round ? Math.round(value) : value;
@@ -34,7 +37,7 @@ namespace Game {
         menu: Menu = new Menu(),
         time: number = new Date().getTime(),
         gl: WebGLRenderingContext = canvas.getContext('webgl'),
-        scene: Scene = new Scene(gl, new Map('4050'+'13d3'+'3111'+'4510'+'3515'+'4015'+'4111'+'1797', 42)),
+        scene: Scene = new Scene(gl, new Map('4111|211125052111|301521513510|205120052051|311117973111|611111d1')),
         light: T3D.Vec3 = new T3D.Vec3(5, 15, 7),
         camera: T3D.Camera = new T3D.Camera(canvas.width / canvas.height),
         shader: T3D.Shader = new T3D.Shader(gl,
@@ -197,8 +200,8 @@ namespace Game {
     }
 
     on(window, 'load', () => {
-        camera.position.set(0, .2, 5);
-        camera.rotate.x = -.7;
+        camera.position.set(0, .5, 5);
+        camera.rotate.x = -.8;
         gl.clearColor(0, 0, 0, 0);
         gl.enable(gl.CULL_FACE);
         gl.enable(gl.DEPTH_TEST);

@@ -29,7 +29,7 @@ namespace Game {
                     block = new T3D.Item(blockMesh, blue, [,,,,45]),
                     enemy = new Enemy(enemyMesh, purple, [,1,,,,,.7,.7,.7]),
                     token = new T3D.Item(tokenMesh, yellow, [,1,,90,,,.5,.1,.5]),
-                    fence = new T3D.Item(fenceMesh, red, [,1.8,,,,,.8,1.5,.8]);
+                    fence = new T3D.Item(fenceMesh, red, [,1.5,,,,,.8,1,.8]);
                 block.collider = new T3D.Box(block.transform);
                 enemy.collider = new T3D.Sphere(enemy.transform);
                 token.collider = new T3D.Sphere(token.transform);
@@ -117,19 +117,14 @@ namespace Game {
                 speed = hero.speed.z;
             this.platforms.forEach((platform, i) => {
                 if (platform.update(speed)) {
-                    let cfg = this.map.row[i % 3];
+                    let cfg = this.map.row[i % 3],
+                        obj = cfg >> 2;
                     platform.block.active = (cfg & 1) > 0;
                     platform.transform.translate.y = (cfg & 2) > 0 ? 0 : -1;
-                    if (cfg & 8) {
-                        platform.fence.active = (cfg & 4) == 0;
-                        platform.enemy.active = (cfg & 4) > 0;
-                        platform.token.active = false;
-                    } else {
-                        platform.token.active = (cfg & 4) > 0;
-                        platform.fence.active = 
-                        platform.enemy.active = false;
-                    }
-                    platform.token.transform.rotate.y = 0;
+                    platform.token.active = obj == 1;
+                    platform.fence.active = obj == 2;
+                    platform.enemy.active = obj == 3;
+                    platform.token.transform.rotate.y = 45;
                     rotate = true;
                 }
                 platform.enemy.intersect(hero);
