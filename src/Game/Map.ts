@@ -12,7 +12,7 @@ namespace Game {
         step: number;
         min: number;
 
-        constructor(config: string, lenght: number = 4, steps: number = 50) {
+        constructor(config: string, lenght: number = 4, steps: number = 100) {
             this.config = config.split('|');
             this.length = lenght;
             this.steps = steps;
