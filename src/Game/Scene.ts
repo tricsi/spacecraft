@@ -7,6 +7,8 @@ namespace Game {
         hud: NodeListOf<Element>; // hud element
         row: number; // active row
         index: number; // active platform
+        planet: number; // active planet
+        planets: NodeListOf<Element>;
         platforms: Platform[];
 
         constructor(hero: Hero, factory, map: string) {
@@ -15,6 +17,7 @@ namespace Game {
             this.hud = $('#hud').getElementsByTagName('DIV'),
             this.hero = hero;
             this.add(this.hero);
+            this.planets = document.getElementsByTagName('LI');
             this.platforms = [];
             for (let i = 0; i < 33; i++) {
                 let platform = factory();
@@ -38,6 +41,17 @@ namespace Game {
                     platform.token.active = false;
                     platform.block.active = true;
                 }
+            }
+            this.planet = this.planets.length - 1;
+            for (i = 0; i < this.planets.length; i++) {
+                this.planets.item(i).className = '';
+            }
+        }
+
+        next() {
+            if (this.planet > 0) {
+                this.planets.item(this.planet--).className = 'hide';
+                console.log('next');
             }
         }
 
@@ -108,8 +122,8 @@ namespace Game {
                 }
                 platform.enemy.intersect(hero);
             });
-            if (rotate) {
-                this.map.update();
+            if (rotate && this.map.update()) {
+                this.next();
             }
             this.updateRow(speed);
             hero.collide = this.platforms[this.getIndex()].intersect(hero);
@@ -120,7 +134,7 @@ namespace Game {
             });
             hero.distance += speed;
             this.hud.item(2).textContent = '' + this.score();
-            this.hud.item(3).textContent = hero.distance.toFixed(0);
+            this.hud.item(3).textContent = '' + hero.tokens;
         }
 
     }

@@ -32,15 +32,17 @@ namespace Game {
             return max < length ? max : length - 1;
         }
 
-        update() {
+        update(): boolean {
+            let next = false;
             if (++this.step > this.steps) {
+                next = true;
                 this.step = 0;
                 if (this.min + this.length < this.config.length - 1) { 
                     this.min++;
                 }
             }
             if (--this.count > 0) {
-                return;
+                return next;
             }
             if (!this.data.length) {
                 this.mirror = Rand.get() > .5;
@@ -52,6 +54,7 @@ namespace Game {
             if (this.mirror) {
                 this.row.reverse();
             }
+            return next;
         }
 
     }

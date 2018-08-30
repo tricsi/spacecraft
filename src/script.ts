@@ -170,8 +170,6 @@ namespace Game {
                 if (e.keyCode == 32) {
                     menu.hide();
                     scene.init();
-                } else {
-                    menu.input(e.keyCode);
                 }
                 return;
             }
@@ -232,7 +230,7 @@ namespace Game {
 
     on(window, 'load', () => {
         camera.position.set(0, .5, 5);
-        camera.rotate.x = -.8;
+        camera.rotate.x = -.7;
         gl.clearColor(0, 0, 0, 0);
         gl.enable(gl.CULL_FACE);
         gl.enable(gl.DEPTH_TEST);
