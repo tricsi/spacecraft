@@ -38,6 +38,9 @@ namespace Game {
                 if (pos.distance(hero.transform.translate) < .5) {
                     this.active = false;
                     hero.tokens += this.score();
+                    if (this.big) {
+                        hero.magnetize();
+                    }
                     return;
                 }
                 this.speed += this.speed;

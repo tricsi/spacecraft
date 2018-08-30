@@ -11,6 +11,8 @@ namespace Game {
         speedTime: number;
         scale: number;
         scaleTime: number;
+        magnet: T3D.Vec3;
+        magnetTime: number;
         tokens: number;
         distance: number;
         tokenCollider: T3D.Sphere;
@@ -21,10 +23,11 @@ namespace Game {
             const transform = this.transform; 
             transform.translate.set(0, 3, 2);
             transform.rotate.set(0, 0, 0);
+            this.color = COLOR.WHITE;
             this.active = true;
             this.transform = transform;
             this.collider = new T3D.Sphere(transform);
-            this.tokenCollider = new T3D.Sphere(transform, new T3D.Vec3(4, 4, 4));
+            this.tokenCollider = new T3D.Sphere(transform);
             this.x = 0;
             this.rad = .4;
             this.acc = -.02;
@@ -32,6 +35,8 @@ namespace Game {
             this.speedTime = 0;
             this.scale = .8;
             this.scaleTime = 0;
+            this.magnet = new T3D.Vec3(5, 5, 5);
+            this.magnetTime = 0;
             this.tokens = 0;
             this.distance = 0;
             this.explode = 0;
@@ -60,6 +65,10 @@ namespace Game {
             this.speedTime = 75;
         }
 
+        magnetize() {
+            this.magnetTime = 450;
+        }
+
         dash() {
             this.scaleTime = 40;
         }
@@ -72,11 +81,17 @@ namespace Game {
             let pos = this.transform.translate,
                 scale = this.scale,
                 rotate = this.transform.rotate,
-                speed = (this.speedTime ? .12 : .07) + Math.min(this.distance / 10000, .05);
+                speed = (this.speedTime ? .12 : .08) + Math.min(this.distance / 10000, .04);
             this.speed.z += ((this.active ? speed : 0) - this.speed.z) / 20;
             this.speedTime -= this.speedTime > 0 ? 1 : 0;
+            this.color = this.speedTime ? COLOR.GREY : COLOR.WHITE;
+            this.color = this.magnetTime > 100 || this.magnetTime % 20 > 10
+                ? (this.speedTime ? COLOR.PURPLE : COLOR.PINK)
+                : (this.speedTime ? COLOR.GREY : COLOR.WHITE);
             this.scale += ((this.scaleTime ? .4 : .7) - this.scale) / 5;
             this.scaleTime -= this.scaleTime > 0 ? 1 : 0;
+            this.magnetTime -= this.magnetTime > 0 ? 1 : 0;
+            this.tokenCollider.scale = this.magnetTime ? this.magnet : this.transform.scale;
             this.stroke += (this.explode - this.stroke) / 25;
             this.active = pos.y > -10 && this.stroke < 6;
             if (!this.active || this.stroke) {

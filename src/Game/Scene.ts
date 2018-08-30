@@ -11,9 +11,9 @@ namespace Game {
         planets: NodeListOf<Element>;
         platforms: Platform[];
 
-        constructor(hero: Hero, factory, map: string) {
+        constructor(hero: Hero, factory, map: Map) {
             super();
-            this.map = new Map(map);
+            this.map = map;
             this.hud = $('#hud').getElementsByTagName('DIV'),
             this.hero = hero;
             this.add(this.hero);
@@ -116,7 +116,7 @@ namespace Game {
                     platform.transform.translate.y = (cfg & 2) > 0 ? 0 : -1;
                     platform.token.init(obj == 1 || obj == 4);
                     platform.fence.active = obj == 2;
-                    platform.enemy.active = obj == 3;
+                    platform.enemy.init(obj == 3);
                     platform.token.transform.rotate.y = 45;
                     rotate = true;
                 }
