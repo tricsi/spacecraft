@@ -71,10 +71,10 @@ namespace Game {
             let pos = this.transform.translate,
                 scale = this.scale,
                 rotate = this.transform.rotate,
-                speed = (this.speedTime ? .12 : .06) + Math.min(this.distance / 10000, .05);
+                speed = (this.speedTime ? .12 : .07) + Math.min(this.distance / 10000, .05);
             this.speed.z += ((this.active ? speed : 0) - this.speed.z) / 20;
             this.speedTime -= this.speedTime > 0 ? 1 : 0;
-            this.scale += ((this.scaleTime ? .5 : .8) - this.scale) / 5;
+            this.scale += ((this.scaleTime ? .4 : .7) - this.scale) / 5;
             this.scaleTime -= this.scaleTime > 0 ? 1 : 0;
             this.stroke += (this.explode - this.stroke) / 25;
             this.active = pos.y > -10 && this.stroke < 6;

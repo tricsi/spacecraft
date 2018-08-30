@@ -97,8 +97,8 @@ namespace Game {
             let platform = new Platform(),
                     block = new T3D.Item(mesh.block, color.blue, [,,,,45]),
                     enemy = new Enemy(mesh.enemy, color.purple, [,1,,,,,.7,.7,.7]),
-                    token = new T3D.Item(mesh.token, color.yellow, [,1,,90,,,.5,.1,.5]),
-                    fence = new T3D.Item(mesh.fence, color.red, [,1.5,,,,,.8,1,.8]);
+                    token = new Token(mesh.token, color.yellow, [,1,,90,,,.5,.1,.5]),
+                    fence = new T3D.Item(mesh.fence, color.red, [,1.4,,,,,.8,1,.8]);
                 block.collider = new T3D.Box(block.transform);
                 enemy.collider = new T3D.Sphere(enemy.transform);
                 token.collider = new T3D.Sphere(token.transform);
@@ -108,7 +108,7 @@ namespace Game {
                 platform.fence = fence;
                 platform.enemy = enemy;
                 return platform.add(block).add(token).add(fence).add(enemy);
-        }, '4111|211125052111|301521513510|205120052051|311113973111|611111d1');
+        }, '4111|211125052111|301521513510|205120052051|311119973111|511111d1|3111|5713|551111dd');
 
     function resize() {
         canvas.width = canvas.clientWidth;
