@@ -27,13 +27,9 @@ namespace Game {
         }
 
         intersect(hero: Hero, side: boolean = false) {
-            let token = this.token,
-                fence = this.fence,
+            let fence = this.fence,
                 collide;
-            if (token.active && token.collider.intersect(hero.collider)) {
-                token.active = false;
-                hero.tokens += token.score();
-            }
+            this.token.intersect(hero);
             if (fence.active) {
                 collide = fence.collider.intersect(hero.collider);
                 if (collide) {

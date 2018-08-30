@@ -13,7 +13,7 @@ namespace Game {
         scaleTime: number;
         tokens: number;
         distance: number;
-        collider: T3D.Sphere;
+        tokenCollider: T3D.Sphere;
         collide: T3D.Vec3;
         explode: number;
 
@@ -24,6 +24,7 @@ namespace Game {
             this.active = true;
             this.transform = transform;
             this.collider = new T3D.Sphere(transform);
+            this.tokenCollider = new T3D.Sphere(transform, new T3D.Vec3(4, 4, 4));
             this.x = 0;
             this.rad = .4;
             this.acc = -.02;

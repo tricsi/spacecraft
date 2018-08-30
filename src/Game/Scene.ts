@@ -100,6 +100,7 @@ namespace Game {
                         obj = cfg >> 2;
                     platform.block.active = (cfg & 1) > 0;
                     platform.transform.translate.y = (cfg & 2) > 0 ? 0 : -1;
+                    platform.token.transform.translate.set(0, 1, 0);
                     platform.token.active = obj == 1 || obj == 4;
                     platform.token.big = !Rand.get(50, 0, true);
                     platform.fence.active = obj == 2;

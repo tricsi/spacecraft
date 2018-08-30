@@ -90,13 +90,14 @@ namespace Game {
             purple: [1, .3, 1, 30],
             blue: [.3, .3, 1, 30],
             yellow: [1, 1, .3, 30],
-            red: [1, .3, .3, 0]
+            red: [1, .3, .3, 0],
+            cyan: [.3, 1, 1, 30],
         },
         hero: Hero = new Hero(mesh.hero, color.white),
         scene: Scene = new Scene(hero, () => {
             let platform = new Platform(),
                     block = new T3D.Item(mesh.block, color.blue, [,,,,45]),
-                    enemy = new Enemy(mesh.enemy, color.purple, [,1,,,,,.7,.7,.7]),
+                    enemy = new Enemy(mesh.enemy, color.cyan, [,1,,,,,.7,.7,.7]),
                     token = new Token(mesh.token, color.yellow, [,1,,90,,,.5,.1,.5]),
                     fence = new T3D.Item(mesh.fence, color.red, [,1.4,,,,,.8,1,.8]);
                 block.collider = new T3D.Box(block.transform);
