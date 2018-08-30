@@ -6,6 +6,14 @@ namespace Game {
     export class Token extends T3D.Item {
 
         big: boolean = false;
+        speed: number;
+
+        init(active: boolean) {
+            this.active = active;
+            this.transform.translate.set(0, 1, 0);
+            this.big = !Rand.get(50, 0, true);
+            this.speed = .01;
+        }
 
         score() {
             return this.big ? 10 : 1;
@@ -32,7 +40,8 @@ namespace Game {
                     hero.tokens += this.score();
                     return;
                 }
-                this.transform.translate.add(hero.transform.translate.clone().sub(pos).scale(.2));
+                this.speed += this.speed;
+                this.transform.translate.add(hero.transform.translate.clone().sub(pos).scale(this.speed));
             }
         }
     }
