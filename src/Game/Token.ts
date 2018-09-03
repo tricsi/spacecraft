@@ -16,7 +16,7 @@ namespace Game {
         }
 
         score() {
-            return this.big ? 10 : 1;
+            return this.big ? 5 : 1;
         }
 
         update() {
@@ -37,9 +37,10 @@ namespace Game {
                 let pos = this.collider.getTranslate();
                 if (pos.distance(hero.transform.translate) < .5) {
                     this.active = false;
-                    hero.tokens += this.score();
                     if (this.big) {
                         hero.magnetize();
+                    } else {
+                        hero.coin();
                     }
                     return;
                 }

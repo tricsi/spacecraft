@@ -8,6 +8,7 @@
     },
     "include": [
         "src/t3d.ts",
+        "src/sfx.ts",
         "src/Game/*.ts",
         "src/script.ts"
     ]

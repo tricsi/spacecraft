@@ -51,7 +51,6 @@ namespace Game {
         next() {
             if (this.planet > 0) {
                 this.planets.item(this.planet--).className = 'hide';
-                console.log('next');
             }
         }
 

@@ -46,31 +46,43 @@ namespace Game {
         left() {
             if (this.x >= 0) {
                 this.x--;
+                SFX.play('move');
             }
         }
 
         right() {
             if (this.x <= 0) {
                 this.x++;
+                SFX.play('move');
             }
         }
 
         jump() {
             if (this.collide) {
                 this.acc = .065;
+                SFX.play('jump');
             }
         }
 
         boost() {
             this.speedTime = 75;
+            SFX.play('move');
         }
 
         magnetize() {
+            this.tokens += 5;
             this.magnetTime = 450;
+            SFX.play('power');
         }
 
         dash() {
             this.scaleTime = 40;
+            SFX.play('move');
+        }
+
+        coin() {
+            this.tokens += 1;
+            SFX.play('coin');
         }
 
         cancel() {
@@ -81,13 +93,13 @@ namespace Game {
             let pos = this.transform.translate,
                 scale = this.scale,
                 rotate = this.transform.rotate,
-                speed = (this.speedTime ? .12 : .08) + Math.min(this.distance / 10000, .04);
+                speed = (this.speedTime ? .12 : .08) + Math.min(this.distance / 50000, .04);
             this.speed.z += ((this.active ? speed : 0) - this.speed.z) / 20;
             this.speedTime -= this.speedTime > 0 ? 1 : 0;
             this.color = this.speedTime ? COLOR.GREY : COLOR.WHITE;
             this.color = this.magnetTime > 100 || this.magnetTime % 20 > 10
-                ? (this.speedTime ? COLOR.PURPLE : COLOR.PINK)
-                : (this.speedTime ? COLOR.GREY : COLOR.WHITE);
+                ? (this.speedTime ? COLOR.PINK : COLOR.PURPLE)
+                : (this.speedTime ? COLOR.WHITE : COLOR.GREY);
             this.scale += ((this.scaleTime ? .4 : .7) - this.scale) / 5;
             this.scaleTime -= this.scaleTime > 0 ? 1 : 0;
             this.magnetTime -= this.magnetTime > 0 ? 1 : 0;

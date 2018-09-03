@@ -45,6 +45,7 @@ namespace Game {
     }
 
     let canvas: HTMLCanvasElement = <HTMLCanvasElement>$('#game'),
+        music: AudioBufferSourceNode,
         menu: Menu = new Menu(),
         time: number = new Date().getTime(),
         gl: WebGLRenderingContext = canvas.getContext('webgl'),
@@ -112,7 +113,14 @@ namespace Game {
                 platform.fence = fence;
                 platform.enemy = enemy;
                 return platform.add(block).add(token).add(fence).add(enemy);
-        }, new Map('4111|311110003115|211135012111|301521513510|205120052051|311119973111|5111111d|3111|5713|551111dd', 5, 200));
+        }, new Map(
+            '4111|311110003115|211135012111|'+
+            '3111|311737173711|311119973111|'+
+            '301531513510|401510004510|5111111d|'+
+            '305130053051|2111|5713|551111dd',
+            6,
+            150
+        ));
 
     function resize() {
         canvas.width = canvas.clientWidth;
@@ -173,6 +181,7 @@ namespace Game {
                 if (e.keyCode == 32) {
                     menu.hide();
                     scene.init();
+                    play();
                 }
                 return;
             }
@@ -181,8 +190,18 @@ namespace Game {
         on($('#play'), 'click', () => {
             menu.hide();
             scene.init();
+            play();
         });
         on(window, 'resize', resize);
+    }
+
+    function play() {
+        if (!music) {
+            SFX.mixer('music').gain.value = .3;
+            SFX.play('music', true, 'music').then(buffer => {
+                music = buffer;
+            });
+        }
     }
 
     function render(item: T3D.Item, stroke: number = 0) {
@@ -228,10 +247,27 @@ namespace Game {
         if (scene.ended()) {
             menu.score(scene.score());
             menu.show();
+            if (music) {
+                music.stop();
+                music = null;
+            }
         }
     }
 
     on(window, 'load', () => {
+        Promise.all([
+            new SFX.Sound('custom', [5, 1, 0], 1).render('exp', [220,110], .5),
+            new SFX.Sound('square', [.5, .1, 0], 1).render('power', [440,880,440,880,440,880,440,880], .3),
+            new SFX.Sound('triangle', [.5, .1, 0], 1).render('jump', [220,880], .3),
+            new SFX.Sound('square', [.2, .1, 0], .2).render('coin', [1760,1760], .2),
+            new SFX.Sound('custom', [.1, .5, 0], .3).render('move', [1760,440], .3),
+            SFX.render('music', [
+                new SFX.Channel(new SFX.Sound('sawtooth', [1, .3], .1), '8a2,8a2,8b2,8c3|8|8g2,8g2,8a2,8b2|8|8e2,8e2,8f2,8g2|4|8g2,8g2,8a2,8b2|4|', 1),
+                new SFX.Channel( new SFX.Sound('sawtooth', [.5, .3], 1), '2a3,2a3e4,2a3d4,2a3e4|2|2g3,2g3d4,2g3c4,2g3d4|2|2e3,2e3a3,2e3b3,2e3a3,1g3b3,1g3c4|', 1)
+            ])
+        ]).then(() => {
+            //play();
+        });
         camera.position.set(0, .5, 5);
         camera.rotate.x = -.7;
         gl.clearColor(0, 0, 0, 0);
