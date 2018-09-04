@@ -30,7 +30,7 @@ namespace Game {
             this.tokenCollider = new T3D.Sphere(transform);
             this.x = 0;
             this.rad = .4;
-            this.acc = -.02;
+            this.acc = -.01;
             this.speed = new T3D.Vec3(0, 0, .1);
             this.speedTime = 0;
             this.scale = .8;
@@ -86,9 +86,7 @@ namespace Game {
         }
 
         cancel() {
-            if (this.collide) {
-                this.x = Math.round(this.transform.translate.x);
-            }
+            this.x = Math.round(this.transform.translate.x);
         }
 
         update() {
@@ -111,7 +109,7 @@ namespace Game {
             if (!this.active || this.stroke) {
                 return;
             }
-            this.acc -= this.acc > -.02 ? .003 : 0;
+            this.acc -= this.acc > -.007 ? .0033 : 0;
             rotate.z = 90 + (pos.x - this.x) * 25;
             rotate.y = (rotate.y + this.speed.z * 100) % 360;
             this.speed.y += this.acc;
