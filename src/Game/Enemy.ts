@@ -27,7 +27,7 @@ namespace Game {
         }
 
         intersect(hero: Hero) {
-            if (this.active && this.collider.intersect(hero.collider)) {
+            if (this.active && !this.explode && !hero.explode && this.collider.intersect(hero.collider)) {
                 SFX.play('exp');
                 if (hero.speedTime) {
                     hero.tokens += 10;

@@ -1,5 +1,9 @@
 namespace SFX {
 
+    declare var window: any;
+
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
     const bitrate = 44100;
     const keys = { c: 0, db: 1, d: 2, eb: 3, e: 4, f: 5, gb: 6, g: 7, ab: 8, a: 9, bb: 10, b: 11 };
     const freq = [];
@@ -32,14 +36,13 @@ namespace SFX {
         }
 
         time(max): number {
-            return max < this.length ? max - .01 : this.length;
+            return (max < this.length ? max : this.length) - .01;
         }
 
         async render(id: string, freq: number[], time: number): Promise<void> {
             let ctx = new OfflineAudioContext(1, bitrate * time, bitrate),
                 vol = ctx.createGain(),
                 curve = Float32Array.from(freq);
-            vol.gain.value = 1;
             vol.connect(ctx.destination);
             if (this.curve) {
                 vol.gain.setValueCurveAtTime(this.curve, 0, this.time(time));
@@ -115,7 +118,6 @@ namespace SFX {
                 inst = this.inst,
                 vol = ctx.createGain(),
                 osc = [];
-            vol.gain.value = 1;
             vol.connect(ctx.destination);
             for (let i = 0; i < this.size; i++) {
                 osc[i] = ctx.createOscillator();

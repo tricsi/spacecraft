@@ -59,7 +59,7 @@ namespace Game {
 
         jump() {
             if (this.collide) {
-                this.acc = .065;
+                this.acc = .03;
                 SFX.play('jump');
             }
         }
@@ -86,7 +86,9 @@ namespace Game {
         }
 
         cancel() {
-            this.x = Math.round(this.transform.translate.x);
+            if (this.collide) {
+                this.x = Math.round(this.transform.translate.x);
+            }
         }
 
         update() {
@@ -109,7 +111,7 @@ namespace Game {
             if (!this.active || this.stroke) {
                 return;
             }
-            this.acc -= this.acc > -.02 ? .01 : 0;
+            this.acc -= this.acc > -.02 ? .003 : 0;
             rotate.z = 90 + (pos.x - this.x) * 25;
             rotate.y = (rotate.y + this.speed.z * 100) % 360;
             this.speed.y += this.acc;
