@@ -19,7 +19,8 @@ namespace Game {
         }
 
         init() {
-            this.count = 0;
+            this.row = [1,1,1];
+            this.count = 5;
             this.data = [];
             this.step = 0;
             this.min = 0;

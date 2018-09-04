@@ -46,43 +46,43 @@ namespace Game {
         left() {
             if (this.x >= 0) {
                 this.x--;
-                SFX.play('move');
+                Event.trigger('move', this);
             }
         }
 
         right() {
             if (this.x <= 0) {
                 this.x++;
-                SFX.play('move');
+                Event.trigger('move', this);
             }
         }
 
         jump() {
             if (this.collide) {
                 this.acc = .03;
-                SFX.play('jump');
+                Event.trigger('jump', this);
             }
         }
 
         boost() {
             this.speedTime = 75;
-            SFX.play('move');
+            Event.trigger('move', this);
         }
 
         magnetize() {
             this.tokens += 5;
             this.magnetTime = 450;
-            SFX.play('power');
+            Event.trigger('power', this);
         }
 
         dash() {
             this.scaleTime = 40;
-            SFX.play('move');
+            Event.trigger('move', this);
         }
 
         coin() {
             this.tokens += 1;
-            SFX.play('coin');
+            Event.trigger('coin', this);
         }
 
         cancel() {

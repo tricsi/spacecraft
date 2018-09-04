@@ -49,7 +49,7 @@ namespace Game {
         menu: Menu = new Menu(),
         time: number = new Date().getTime(),
         gl: WebGLRenderingContext = canvas.getContext('webgl'),
-        light: T3D.Vec3 = new T3D.Vec3(0, 15, 7),
+        light: T3D.Vec3 = new T3D.Vec3(5, 15, 7),
         camera: T3D.Camera = new T3D.Camera(canvas.width / canvas.height),
         shader: T3D.Shader = new T3D.Shader(gl,
             'precision mediump float;' +
@@ -93,7 +93,7 @@ namespace Game {
         mesh = {
             hero: new T3D.Mesh(gl, 10),
             block: new T3D.Mesh(gl, 4, [.55, .5, .65, .4, .65, -.4, .55, -.5]),
-            fence: new T3D.Mesh(gl, 12, [.4, .5, .5, .4, .5, -.4, .4, -.5], 30),
+            fence: new T3D.Mesh(gl, 12, [.4, .5, .5, .4, .5, -.4, .4, -.5], 40),
             token: new T3D.Mesh(gl, 9, [.45, .3, .45, .5, .5, .5, .5, -.5, .45, -.5, .45, -.3], 30),
             enemy: new T3D.Mesh(gl, 6),
         },
@@ -115,9 +115,9 @@ namespace Game {
                 return platform.add(block).add(token).add(fence).add(enemy);
         }, new Map(
             '4111|311110003115|211135012111|'+
-            '3111|311737173711|311119973111|'+
-            '301531513510|305130053051|5111111d|'+
-            '2111|5713|551111dd|401510004510',
+            '3111|311737173711|301531513510|'+
+            '2111|311119973111|305130053051|'+
+            '5111111d|5713|551111dd|401510004510',
             6,
             150
         ));
@@ -132,15 +132,17 @@ namespace Game {
     function bind(): void {
         let x: number = 0,
             y: number = 0,
-            min: number = 20,
+            min: number = 15,
             keys: boolean[] = [],
             drag = false;
+        
         on(document, 'touchstart', (e: TouchEvent) => {
             let touch = e.touches[0];
             x = touch.clientX;
             y = touch.clientY;
             drag = true;
         });
+        
         on(document, 'touchmove', (e: TouchEvent) => {
             if (!drag) {
                 return;
@@ -164,6 +166,7 @@ namespace Game {
                 drag = false;
             }
         });
+        
         on(document, 'touchend', (e: TouchEvent) => {
             if (drag) {
                 keys[32] = true;
@@ -176,32 +179,46 @@ namespace Game {
             keys[40] =
             drag = false;
         });
+        
         on(document, 'keydown', (e: KeyboardEvent) => {
             if (menu.active) {
                 if (e.keyCode == 32) {
-                    menu.hide();
-                    scene.init();
-                    play();
+                    Event.trigger('start', scene);
                 }
                 return;
             }
             scene.input(e.keyCode);
         });
+        
         on($('#play'), 'click', () => {
+            Event.trigger('start', scene);
+        });
+        
+        on(window, 'resize', resize);
+
+        Event.on('move jump boost power coin hit exp', (hero:Hero, event) => {
+            SFX.play(event);
+        });
+
+        Event.on('start', (scene: Scene) => {
             menu.hide();
             scene.init();
-            play();
+            if (!music) {
+                SFX.mixer('music').gain.value = .3;
+                SFX.play('music', true, 'music').then(buffer => {
+                    music = buffer;
+                });
+            }
         });
-        on(window, 'resize', resize);
-    }
 
-    function play() {
-        if (!music) {
-            SFX.mixer('music').gain.value = .3;
-            SFX.play('music', true, 'music').then(buffer => {
-                music = buffer;
-            });
-        }
+        Event.on('end', (scene: Scene) => {
+            menu.score(scene.score());
+            menu.show();
+            if (music) {
+                music.stop();
+                music = null;
+            }
+        });
     }
 
     function render(item: T3D.Item, stroke: number = 0) {
@@ -245,18 +262,14 @@ namespace Game {
         render(scene);
         render(scene, .02);
         if (scene.ended()) {
-            menu.score(scene.score());
-            menu.show();
-            if (music) {
-                music.stop();
-                music = null;
-            }
+            Event.trigger('end', scene);
         }
     }
 
     on(window, 'load', () => {
         Promise.all([
-            new SFX.Sound('custom', [5, 1, 0], 1).render('exp', [220,110], .5),
+            new SFX.Sound('custom', [5, 1, 0], 1).render('exp', [220,0], 1),
+            new SFX.Sound('custom', [3, 1, 0], 1).render('hit', [1760,0], .3),
             new SFX.Sound('square', [.5, .1, 0], 1).render('power', [440,880,440,880,440,880,440,880], .3),
             new SFX.Sound('triangle', [.5, .1, 0], 1).render('jump', [220,880], .3),
             new SFX.Sound('square', [.2, .1, 0], .2).render('coin', [1760,1760], .2),
@@ -266,7 +279,7 @@ namespace Game {
                 new SFX.Channel( new SFX.Sound('sawtooth', [.5, .3], 1), '2a3,2a3e4,2a3d4,2a3e4|2|2g3,2g3d4,2g3c4,2g3d4|2|2e3,2e3a3,2e3b3,2e3a3,1g3b3,1g3c4|', 1)
             ])
         ]).then(() => {
-            //play();
+            Event.trigger('load');
         });
         camera.position.set(0, .5, 5);
         camera.rotate.x = -.7;

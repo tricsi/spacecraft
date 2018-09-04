@@ -27,6 +27,9 @@ namespace Game {
         }
 
         intersect(hero: Hero, side: boolean = false) {
+            if (!hero.active || hero.stroke) {
+                return;
+            }
             let fence = this.fence,
                 collide;
             this.token.intersect(hero);

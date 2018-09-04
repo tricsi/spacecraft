@@ -28,13 +28,14 @@ namespace Game {
 
         intersect(hero: Hero) {
             if (this.active && !this.explode && !hero.explode && this.collider.intersect(hero.collider)) {
-                SFX.play('exp');
                 if (hero.speedTime) {
                     hero.tokens += 10;
                     this.explode = 7;
+                    Event.trigger('hit', hero);
                     return;
                 }
                 hero.explode = 7;
+                Event.trigger('exp', hero);
             }
         }
     }
