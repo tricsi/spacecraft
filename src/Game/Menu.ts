@@ -12,9 +12,10 @@ namespace Game {
         scores: NodeListOf<Element>;
 
         constructor() {
+            let data = JSON.parse(window.localStorage.getItem(STORE));
             this.body = $('body');
             this.active = true;
-            this.storage = JSON.parse(window.localStorage.getItem(STORE)) || {};
+            this.storage = data && typeof data === 'object' && 'score' in data ? data : {score:0,token:0}; 
             this.selected = 0;
             this.heroes = ['Sputnik', 'Voyager', 'Pioneer', 'Cassini'];
             this.scores = document.getElementsByTagName('H3');
@@ -88,7 +89,7 @@ namespace Game {
             let score = this.storage.score || 0, 
                 element = this.scores.item(0);
             if (score < value) {
-                element.textContent = 'New High Score: ' + score;
+                element.textContent = 'New High Score: ' + value;
                 this.storage.score = value;
                 this.store();
             } else if (score) {
