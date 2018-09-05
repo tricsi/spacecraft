@@ -59,7 +59,7 @@ namespace Game {
         }
 
         score() {
-            return Math.round(this.hero.tokens * 10 + this.hero.distance);
+            return Math.round(this.hero.points + this.hero.distance);
         }
 
         input(key: number): void {
@@ -132,8 +132,13 @@ namespace Game {
                 platform.intersect(hero, add == 1 || add == -1);
             });
             hero.distance += speed;
-            this.hud.item(2).textContent = '' + this.score();
-            this.hud.item(3).textContent = '' + hero.tokens;
+            this.updateHud();
+        }
+
+        updateHud() {
+            let hero = this.hero;
+            this.hud.item(0).textContent = '' + (this.score() || '');
+            this.hud.item(1).textContent = hero.tokens ? '$' + hero.tokens : '';
         }
 
     }

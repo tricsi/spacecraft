@@ -2,8 +2,9 @@ namespace SFX {
 
     declare var window: any;
 
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    const OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    window.OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+
     const bitrate = 44100;
     const keys = { c: 0, db: 1, d: 2, eb: 3, e: 4, f: 5, gb: 6, g: 7, ab: 8, a: 9, bb: 10, b: 11 };
     const freq = [];
@@ -64,7 +65,10 @@ namespace SFX {
                 osc.start();
                 osc.stop(time);
             }
-            buffers[id] = await ctx.startRendering();
+            ctx.addEventListener('complete', (e) => {
+                buffers[id] = e.renderedBuffer;
+            });
+            await ctx.startRendering();
         }
 
     }
@@ -149,10 +153,13 @@ namespace SFX {
             }
         });
         const ctx = new OfflineAudioContext(1, bitrate * length, bitrate);
+        ctx.addEventListener('complete', (e) => {
+            buffers[id] = e.renderedBuffer;
+        });
         channels.forEach((channel, i) => {
             channel.play(ctx);
         });
-        buffers[id] = await ctx.startRendering();
+        await ctx.startRendering();
     }
 
     export function mixer(id: string): GainNode {

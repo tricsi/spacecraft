@@ -13,34 +13,38 @@ namespace Game {
         scaleTime: number;
         magnet: T3D.Vec3;
         magnetTime: number;
-        tokens: number;
+        tokens: number = 0;
+        points: number;
         distance: number;
         tokenCollider: T3D.Sphere;
         collide: T3D.Vec3;
         explode: number;
 
-        init() {
+        init(reset: boolean = true) {
             const transform = this.transform; 
-            transform.translate.set(0, 3, 2);
-            transform.rotate.set(0, 0, 0);
-            this.color = COLOR.WHITE;
+            transform.translate.set(0, 0, 0);
+            transform.rotate.set(0, 0, 90);
+            transform.scale.set(1, 1, 1);
+            this.color = COLOR.GREY;
             this.active = true;
             this.transform = transform;
             this.collider = new T3D.Sphere(transform);
             this.tokenCollider = new T3D.Sphere(transform);
             this.x = 0;
             this.rad = .4;
-            this.acc = -.01;
+            this.acc = -.02;
             this.speed = new T3D.Vec3(0, 0, .1);
             this.speedTime = 0;
             this.scale = .8;
             this.scaleTime = 0;
             this.magnet = new T3D.Vec3(5, 5, 5);
             this.magnetTime = 0;
-            this.tokens = 0;
-            this.distance = 0;
             this.explode = 0;
             this.stroke = 0;
+            if (reset) {
+                this.points = 0;
+                this.distance = 0;
+            }
         }
 
         left() {
@@ -71,6 +75,7 @@ namespace Game {
 
         magnetize() {
             this.tokens += 5;
+            this.points += 50;
             this.magnetTime = 450;
             Event.trigger('power', this);
         }
@@ -82,6 +87,7 @@ namespace Game {
 
         coin() {
             this.tokens += 1;
+            this.points += 10;
             Event.trigger('coin', this);
         }
 
@@ -93,7 +99,7 @@ namespace Game {
             let pos = this.transform.translate,
                 scale = this.scale,
                 rotate = this.transform.rotate,
-                speed = (this.speedTime ? .12 : .08) + Math.min(this.distance / 50000, .04);
+                speed = (this.speedTime ? .12 : .08) + Math.min(this.distance / 30000, .04);
             this.speed.z += ((this.active ? speed : 0) - this.speed.z) / 20;
             this.speedTime -= this.speedTime > 0 ? 1 : 0;
             this.color = this.speedTime ? COLOR.GREY : COLOR.WHITE;
@@ -109,7 +115,7 @@ namespace Game {
             if (!this.active || this.stroke) {
                 return;
             }
-            this.acc -= this.acc > -.007 ? .0033 : 0;
+            this.acc -= this.acc > -.017 ? .003 : 0;
             rotate.z = 90 + (pos.x - this.x) * 25;
             rotate.y = (rotate.y + this.speed.z * 100) % 360;
             this.speed.y += this.acc;
@@ -117,6 +123,12 @@ namespace Game {
             pos.y += this.speed.y;
             pos.z -= pos.z / 30;
             this.transform.scale.set(scale, scale, scale);
+        }
+
+        preview() {
+            let rotate = this.transform.rotate;
+            rotate.y = (rotate.y + 1) % 360;
+            rotate.z = (rotate.z + .7) % 360;
         }
 
     }

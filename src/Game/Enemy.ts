@@ -29,7 +29,7 @@ namespace Game {
         intersect(hero: Hero) {
             if (this.active && !this.explode && !hero.explode && this.collider.intersect(hero.collider)) {
                 if (hero.speedTime) {
-                    hero.tokens += 10;
+                    hero.points += 100;
                     this.explode = 7;
                     Event.trigger('hit', hero);
                     return;

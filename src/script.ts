@@ -4,8 +4,8 @@ namespace Game {
         return (element || document).querySelector(query);
     }
 
-    export function on(element: any, event: string, callback: EventListenerOrEventListenerObject) {
-        element.addEventListener(event, callback, false);
+    export function on(element: any, event: string, callback: EventListenerOrEventListenerObject, capture: any = false) {
+        element.addEventListener(event, callback, capture);
     }
 
     export function fullscreen() {
@@ -45,8 +45,8 @@ namespace Game {
     }
 
     let canvas: HTMLCanvasElement = <HTMLCanvasElement>$('#game'),
-        music: AudioBufferSourceNode,
         menu: Menu = new Menu(),
+        music: AudioBufferSourceNode,
         time: number = new Date().getTime(),
         gl: WebGLRenderingContext = canvas.getContext('webgl'),
         light: T3D.Vec3 = new T3D.Vec3(5, 15, 7),
@@ -91,33 +91,38 @@ namespace Game {
             '}'
         ),
         mesh = {
-            hero: new T3D.Mesh(gl, 10),
+            hero: [
+                new T3D.Mesh(gl, 10), 
+                new T3D.Mesh(gl, 10, [.5, .15, .5, .1, .5, -.1, .5, -.15], 30),
+                new T3D.Mesh(gl, 10, [.2, .5, .5, .2, .5, .1, .2, .1, .2, -.1, .5, -.1, .5, -.1, .5, -.2, .5, -.2, .2, -.5], 30),
+                new T3D.Mesh(gl, 10, [.3, .42, .45, .3, .45, .2, .5, .2, .5, .1, .45, .1, .45, -.1, .5, -.1, .5, -.2, .45, -.2, .45, -.3, .3, -.42], 30),
+            ],
             block: new T3D.Mesh(gl, 4, [.55, .5, .65, .4, .65, -.4, .55, -.5]),
             fence: new T3D.Mesh(gl, 12, [.4, .5, .5, .4, .5, -.4, .4, -.5], 40),
             token: new T3D.Mesh(gl, 9, [.45, .3, .45, .5, .5, .5, .5, -.5, .45, -.5, .45, -.3], 30),
             enemy: new T3D.Mesh(gl, 6),
         },
-        hero: Hero = new Hero(mesh.hero, COLOR.WHITE),
+        hero: Hero = new Hero(mesh.hero[3], COLOR.WHITE),
         scene: Scene = new Scene(hero, () => {
             let platform = new Platform(),
-                    block = new T3D.Item(mesh.block, COLOR.BLUE, [,,,,45]),
-                    enemy = new Enemy(mesh.enemy, COLOR.CYAN, [,1,,,,,.7,.7,.7]),
-                    token = new Token(mesh.token, COLOR.YELLOW, [,1,,90,,,.5,.1,.5]),
-                    fence = new T3D.Item(mesh.fence, COLOR.RED, [,1.4,,,,,.8,1,.8]);
-                block.collider = new T3D.Box(block.transform);
-                enemy.collider = new T3D.Sphere(enemy.transform);
-                token.collider = new T3D.Sphere(token.transform);
-                fence.collider = new T3D.Box(fence.transform);
-                platform.block = block;
-                platform.token = token;
-                platform.fence = fence;
-                platform.enemy = enemy;
-                return platform.add(block).add(token).add(fence).add(enemy);
+                block = new T3D.Item(mesh.block, COLOR.BLUE, [,,,,45]),
+                enemy = new Enemy(mesh.enemy, COLOR.CYAN, [,1,,,,,.7,.7,.7]),
+                token = new Token(mesh.token, COLOR.YELLOW, [,1,,90,,,.5,.1,.5]),
+                fence = new T3D.Item(mesh.fence, COLOR.RED, [,1.4,,,,,.8,1,.8]);
+            block.collider = new T3D.Box(block.transform);
+            enemy.collider = new T3D.Sphere(enemy.transform);
+            token.collider = new T3D.Sphere(token.transform);
+            fence.collider = new T3D.Box(fence.transform);
+            platform.block = block;
+            platform.token = token;
+            platform.fence = fence;
+            platform.enemy = enemy;
+            return platform.add(block).add(token).add(fence).add(enemy);
         }, new Map(
-            '4111|211135012111|2111|5711|'+
-            '3111|311737173711|301531513510|'+
-            '311110003115|311119973111|305130053051|'+
-            '5111111d|551111dd|401510004510',
+            '311737173711|4111|5711|3111|'+
+            '211135012111|2111|301531513510|'+
+            '311119973111|5111111d|311110003115|'+
+            '551111dd|305130053051|401510004510',
             6,
             150
         ));
@@ -144,6 +149,7 @@ namespace Game {
         });
         
         on(document, 'touchmove', (e: TouchEvent) => {
+            e.preventDefault();
             if (!drag) {
                 return;
             }
@@ -165,9 +171,12 @@ namespace Game {
                 scene.input(38);
                 drag = false;
             }
-        });
+        }, {passive: false});
         
         on(document, 'touchend', (e: TouchEvent) => {
+            if (menu.active) {
+                return;
+            }
             if (drag) {
                 keys[32] = true;
                 scene.input(32);
@@ -182,16 +191,11 @@ namespace Game {
         
         on(document, 'keydown', (e: KeyboardEvent) => {
             if (menu.active) {
-                if (e.keyCode == 32) {
-                    Event.trigger('start', scene);
-                }
+                menu.input(e.keyCode);
                 return;
+            } else {
+                scene.input(e.keyCode);
             }
-            scene.input(e.keyCode);
-        });
-        
-        on($('#play'), 'click', () => {
-            Event.trigger('start', scene);
         });
         
         on(window, 'resize', resize);
@@ -200,7 +204,7 @@ namespace Game {
             SFX.play(event);
         });
 
-        Event.on('start', (scene: Scene) => {
+        Event.on('start', () => {
             menu.hide();
             scene.init();
             if (!music) {
@@ -211,8 +215,9 @@ namespace Game {
             }
         });
 
-        Event.on('end', (scene: Scene) => {
+        Event.on('end', () => {
             menu.score(scene.score());
+            menu.token(hero.tokens);
             menu.show();
             if (music) {
                 music.stop();
@@ -251,6 +256,10 @@ namespace Game {
         requestAnimationFrame(update);
         gl.clear(gl.COLOR_BUFFER_BIT);
         if (menu.active) {
+            hero.mesh = mesh.hero[menu.selected];
+            hero.preview();
+            render(hero);
+            render(hero, .02);
             return;
         }
         let now = new Date().getTime();
@@ -262,7 +271,8 @@ namespace Game {
         render(scene);
         render(scene, .02);
         if (scene.ended()) {
-            Event.trigger('end', scene);
+            hero.init(false);
+            Event.trigger('end');
         }
     }
 
@@ -281,6 +291,9 @@ namespace Game {
         ]).then(() => {
             Event.trigger('load');
         });
+        hero.init();
+        hero.tokens = menu.token();
+        scene.updateHud();
         camera.position.set(0, .5, 5);
         camera.rotate.x = -.7;
         gl.clearColor(0, 0, 0, 0);
