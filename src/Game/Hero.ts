@@ -25,14 +25,14 @@ namespace Game {
             transform.translate.set(0, 0, 0);
             transform.rotate.set(0, 0, 90);
             transform.scale.set(1, 1, 1);
-            this.color = COLOR.GREY;
+            this.color = COLOR.WHITE;
             this.active = true;
             this.transform = transform;
             this.collider = new T3D.Sphere(transform);
             this.tokenCollider = new T3D.Sphere(transform);
             this.x = 0;
             this.rad = .4;
-            this.acc = -.02;
+            this.acc = -.015;
             this.speed = new T3D.Vec3(0, 0, .1);
             this.speedTime = 0;
             this.scale = .8;
@@ -99,14 +99,11 @@ namespace Game {
             let pos = this.transform.translate,
                 scale = this.scale,
                 rotate = this.transform.rotate,
-                speed = (this.speedTime ? .12 : .08) + Math.min(this.distance / 30000, .04);
+                speed = (this.speedTime ? .13 : .08) + Math.min(this.distance / 15000, .04);
             this.speed.z += ((this.active ? speed : 0) - this.speed.z) / 20;
             this.speedTime -= this.speedTime > 0 ? 1 : 0;
-            this.color = this.speedTime ? COLOR.GREY : COLOR.WHITE;
-            this.color = this.magnetTime > 100 || this.magnetTime % 20 > 10
-                ? (this.speedTime ? COLOR.PINK : COLOR.PURPLE)
-                : (this.speedTime ? COLOR.WHITE : COLOR.GREY);
-            this.scale += ((this.scaleTime ? .4 : .7) - this.scale) / 5;
+            this.color = this.magnetTime > 100 || this.magnetTime % 20 > 10 ? COLOR.PINK : COLOR.WHITE;
+            this.scale += ((this.scaleTime ? .5 : .7) - this.scale) / 5;
             this.scaleTime -= this.scaleTime > 0 ? 1 : 0;
             this.magnetTime -= this.magnetTime > 0 ? 1 : 0;
             this.tokenCollider.scale = this.magnetTime ? this.magnet : this.transform.scale;
@@ -115,7 +112,7 @@ namespace Game {
             if (!this.active || this.stroke) {
                 return;
             }
-            this.acc -= this.acc > -.017 ? .003 : 0;
+            this.acc -= this.acc > -.012 ? .003 : 0;
             rotate.z = 90 + (pos.x - this.x) * 25;
             rotate.y = (rotate.y + this.speed.z * 100) % 360;
             this.speed.y += this.acc;

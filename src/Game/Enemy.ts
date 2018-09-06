@@ -8,7 +8,8 @@ namespace Game {
             this.active = active;
             this.stroke = 0;
             this.explode = 0;
-            this.transform.rotate.z = 0;
+            this.transform.rotate.set(0, 0, 0);
+            this.transform.translate.set(0, 1, 0);
         }
 
         update(speed: number, end:boolean) {
