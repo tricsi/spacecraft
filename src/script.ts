@@ -187,12 +187,20 @@ namespace Game {
         });
         
         on(document, 'keydown', (e: KeyboardEvent) => {
+            if (keys[e.keyCode]) {
+                return;
+            }
+            keys[e.keyCode] = true;
             if (menu.active) {
                 menu.input(e.keyCode);
                 return;
             } else {
                 scene.input(e.keyCode);
             }
+        });
+
+        on(document, 'keyup', (e: KeyboardEvent) => {
+            keys[e.keyCode] = false;
         });
         
         on(window, 'resize', resize);
