@@ -10,19 +10,10 @@ namespace SFX {
     const freq = [];
     const out = new AudioContext();
     const ctx = new OfflineAudioContext(1, bitrate * 2, bitrate);
-    const noise = ctx.createBuffer(1, bitrate * 2, bitrate);
-    const output = noise.getChannelData(0);
-    const buffers : { [id: string]: AudioBuffer } = {};
     const gains: { [id: string]: GainNode } = {};
-
-    let a = Math.pow(2, 1 / 12);
-    for (let n = -57; n < 50; n++) {
-        freq.push(Math.round(Math.pow(a, n) * 44000) / 100);
-    }
-
-    for (let i = 0; i < bitrate * 2; i++) {
-        output[i] = Math.random() * 2 - 1;
-    }
+    const buffers : { [id: string]: AudioBuffer } = {};
+    let noise: AudioBuffer;
+    let output: Float32Array;
 
     export class Sound {
 
@@ -48,6 +39,9 @@ namespace SFX {
             if (this.curve) {
                 vol.gain.setValueCurveAtTime(this.curve, 0, this.time(time));
             }
+            ctx.addEventListener('complete', (e) => {
+                buffers[id] = e.renderedBuffer;
+            });
             if (this.type == 'custom') {
                 let src = ctx.createBufferSource(),
                     filter = ctx.createBiquadFilter();
@@ -65,9 +59,6 @@ namespace SFX {
                 osc.start();
                 osc.stop(time);
             }
-            ctx.addEventListener('complete', (e) => {
-                buffers[id] = e.renderedBuffer;
-            });
             await ctx.startRendering();
         }
 
@@ -145,6 +136,21 @@ namespace SFX {
 
     }
 
+    export async function init(): Promise<void> {
+        if (out.state === 'suspended') {
+            await out.resume();
+        }
+        let a = Math.pow(2, 1 / 12);
+        for (let n = -57; n < 50; n++) {
+            freq.push(Math.pow(a, n) * 440);
+        }
+        noise = out.createBuffer(1, bitrate * 2, bitrate);
+        output = noise.getChannelData(0);
+        for (let i = 0; i < bitrate * 2; i++) {
+            output[i] = Math.random() * 2 - 1;
+        }
+    }
+
     export async function render(id: string, channels: Channel[]): Promise<void> {
         let length = 0;
         channels.forEach(channel => {
@@ -170,8 +176,7 @@ namespace SFX {
         return gains[id];
     }
 
-    export async function play(id: string, loop: boolean = false, mixerId: string = 'master'): Promise<AudioBufferSourceNode> {
-        await out.resume();
+    export function play(id: string, loop: boolean = false, mixerId: string = 'master'): AudioBufferSourceNode {
         if (id in buffers) {
             let src = out.createBufferSource();
             if (loop) {

@@ -33,7 +33,8 @@ namespace Game {
         }
 
         intersect(hero: Hero) {
-            if (this.active && this.collider.intersect(hero.tokenCollider)) {
+            let collider = this.big ? hero.collider : hero.tokenCollider;
+            if (this.active && this.collider.intersect(collider)) {
                 let pos = this.collider.getTranslate();
                 if (pos.distance(hero.transform.translate) < .5) {
                     this.active = false;
