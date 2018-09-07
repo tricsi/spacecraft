@@ -4,7 +4,6 @@ namespace Game {
 
         hero: Hero;
         map: Map; // platform bit map
-        hud: NodeListOf<Element>; // hud element
         row: number; // active row
         index: number; // active platform
         planet: number; // active planet
@@ -14,7 +13,6 @@ namespace Game {
         constructor(hero: Hero, factory, map: Map) {
             super();
             this.map = map;
-            this.hud = $('#hud').getElementsByTagName('DIV'),
             this.hero = hero;
             this.add(this.hero);
             this.planets = document.getElementsByTagName('LI');
@@ -132,13 +130,6 @@ namespace Game {
                 platform.intersect(hero, add == 1 || add == -1);
             });
             hero.distance += speed;
-            this.updateHud();
-        }
-
-        updateHud() {
-            let hero = this.hero;
-            this.hud.item(0).textContent = '' + (this.score() || '');
-            this.hud.item(1).textContent = hero.tokens ? '$' + hero.tokens : '';
         }
 
     }

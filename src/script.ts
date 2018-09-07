@@ -219,8 +219,7 @@ namespace Game {
         });
 
         Event.on('end', () => {
-            menu.score(scene.score());
-            menu.token(hero.tokens);
+            hero.init(false);
             menu.show();
             if (music) {
                 music.stop();
@@ -233,7 +232,6 @@ namespace Game {
         item.childs.forEach(child => {
             render(child, stroke);
         });
-        let scale = item.transform.scale;
         if (!item.active || !item.mesh) {
             return;
         }
@@ -258,7 +256,7 @@ namespace Game {
     function update() {
         requestAnimationFrame(update);
         gl.clear(gl.COLOR_BUFFER_BIT);
-        if (menu.active) {
+        if (menu.shop) {
             hero.mesh = mesh.hero[menu.selected];
             hero.preview();
             render(hero);
@@ -273,9 +271,8 @@ namespace Game {
         scene.update();
         render(scene);
         render(scene, .02);
-        if (scene.ended()) {
-            hero.init(false);
-            Event.trigger('end');
+        if (!menu.active && scene.ended()) {
+            menu.score(scene.score(), hero.tokens);
         }
     }
 
@@ -297,7 +294,6 @@ namespace Game {
         });
         hero.init();
         hero.tokens = menu.token();
-        scene.updateHud();
         camera.position.set(0, .5, 5);
         camera.rotate.x = -.7;
         gl.clearColor(0, 0, 0, 0);

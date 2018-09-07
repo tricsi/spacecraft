@@ -5,6 +5,8 @@ namespace Game {
     export class Menu {
 
         body: Element;
+        shop: boolean;
+        info: NodeListOf<Element>;
         active: boolean;
         storage: any;
         selected: number;
@@ -14,17 +16,21 @@ namespace Game {
         constructor() {
             let data = JSON.parse(window.localStorage.getItem(STORE));
             this.body = $('body');
+            this.info = document.getElementsByTagName('H3');;
+            this.shop = true;
             this.active = true;
             this.storage = data && typeof data === 'object' && 'score' in data ? data : {score:0,token:0}; 
             this.selected = 0;
-            this.heroes = ['Sputnik', 'Voyager', 'Pioneer', 'Cassini'];
-            this.scores = document.getElementsByTagName('H3');
-            this.score(this.storage);
+            this.heroes = ['SPUTNIK', 'VOYAGER', 'PIONEER', 'CASSINI'];
+            this.scores = document.getElementsByTagName('H4');
             this.hero();
             this.bind();
         }
 
         bind() {            
+            on($('#ok'), 'click', () => {
+                Event.trigger('end');
+            });
             on($('#play'), 'click', () => {
                 Event.trigger('start');
             });
@@ -42,7 +48,7 @@ namespace Game {
             }
             switch (key) {
                case 32:
-                    Event.trigger('start');
+                    Event.trigger(this.shop ? 'start' : 'end');
                     break;
                 case 37:
                     this.prev();
@@ -54,7 +60,7 @@ namespace Game {
         }
 
         hero() {
-            this.scores.item(1).textContent = this.heroes[this.selected];
+            this.info.item(0).textContent = this.heroes[this.selected];
         }
 
         prev() {
@@ -85,25 +91,34 @@ namespace Game {
             return token;
         }
 
-        score(value: number) {
-            let score = this.storage.score || 0, 
+        score(score: number, tokens: number) {
+            let high = this.storage.score || 0,
                 element = this.scores.item(0);
-            if (score < value) {
-                element.textContent = 'New High Score: ' + value;
-                this.storage.score = value;
+            this.scores.item(4).textContent = `SCORE: ${score}`;
+            this.scores.item(5).textContent = `TOKEN: ${tokens}`;
+            if (high < score) {
+                element.textContent = 'NEW HIGH SCORE';
+                this.storage.score = score;
                 this.store();
-            } else if (score) {
-                element.textContent = 'High Score: ' + score;
+            } else {
+                element.textContent = 'RESULTS';
             }
+            this.token(tokens);
+            this.active = true;
+            this.body.className = 'end';
         }
 
         show() {
-            this.active = true;
+            this.shop = true;
             this.body.className = '';
         }
 
         hide() {
+            this.shop = false;
             this.active = false;
+            this.scores.item(0).textContent = 'MISSION';
+            this.scores.item(4).textContent = '';
+            this.scores.item(5).textContent = '';
             this.body.className = 'play';
         }
 

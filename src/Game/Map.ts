@@ -20,7 +20,7 @@ namespace Game {
 
         init() {
             this.row = [1,1,1];
-            this.count = 5;
+            this.count = 10;
             this.data = [];
             this.step = 0;
             this.min = 0;
