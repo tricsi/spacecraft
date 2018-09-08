@@ -12,6 +12,7 @@ namespace Game {
         selected: number;
         heroes: string[];
         scores: NodeListOf<Element>;
+        levels: Task[][];
 
         constructor() {
             let data = JSON.parse(window.localStorage.getItem(STORE));
@@ -19,12 +20,28 @@ namespace Game {
             this.info = document.getElementsByTagName('H3');;
             this.shop = true;
             this.active = true;
-            this.storage = data && typeof data === 'object' && 'score' in data ? data : {score:0,token:0}; 
+            this.storage = data && typeof data === 'object' && 'level' in data ? data : {
+                score: 0,
+                token: 0,
+                level: 0
+            }; 
             this.selected = 0;
             this.heroes = ['SPUTNIK', 'VOYAGER', 'PIONEER', 'CASSINI'];
             this.scores = document.getElementsByTagName('H4');
+            this.levels = [
+                [new Task('coin', 50), new Task('power', 1), new Task('planet', 1)],
+                [new Task('coin', 50, true), new Task('hit', 1), new Task('planet', 2)],
+            ];
             this.hero();
             this.bind();
+        }
+
+        level() {
+            return this.storage.level + 1;
+        }
+
+        tasks(): Task[] {
+            return this.levels[this.storage.level % this.levels.length];
         }
 
         bind() {            
@@ -39,6 +56,11 @@ namespace Game {
             });
             on($('#next'), 'click', () => {
                 this.next();
+            });
+            Event.on('all', (event) => {
+                this.tasks().forEach(task => {
+                    task.on(event);
+                });
             });
         }
 
@@ -91,6 +113,24 @@ namespace Game {
             return token;
         }
 
+        mission(result: boolean = false) {
+            let complete = true;
+            this.tasks().forEach((task, i) => {
+                if (!result) {
+                    task.init();
+                }
+                let item = this.scores.item(i + 1);
+                item.textContent = task.toString(result);
+                item.className = task.done() ? 'done' : '';
+                complete = complete && task.done();
+            });
+            if (complete) {
+                this.scores.item(0).textContent = 'LEVEL ' + this.level();                
+                this.storage.level++;
+                this.store();
+            }
+        }
+
         score(score: number, tokens: number) {
             let high = this.storage.score || 0,
                 element = this.scores.item(0);
@@ -104,6 +144,7 @@ namespace Game {
                 element.textContent = 'RESULTS';
             }
             this.token(tokens);
+            this.mission(true);
             this.active = true;
             this.body.className = 'end';
         }
@@ -116,8 +157,9 @@ namespace Game {
         hide() {
             this.shop = false;
             this.active = false;
-            this.scores.item(0).textContent = 'MISSION';
-            this.scores.item(4).textContent = '';
+            this.mission();
+            this.scores.item(0).textContent =
+            this.scores.item(4).textContent =
             this.scores.item(5).textContent = '';
             this.body.className = 'play';
         }

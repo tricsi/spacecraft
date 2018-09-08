@@ -205,7 +205,7 @@ namespace Game {
         
         on(window, 'resize', resize);
 
-        Event.on('move jump boost power coin hit exp', (hero:Hero, event) => {
+        Event.on('all', (event) => {
             SFX.play(event);
         });
 

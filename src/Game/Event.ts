@@ -2,9 +2,9 @@ namespace Game {
 
     export class Event {
 
-        private static listener: {[event: string]: {(params?: any, event?:string): void}[]} = {};
+        private static listener: {[event: string]: {(event?:string, params?: any): void}[]} = { all: [] };
 
-        static on(event:string, listener: {(params?: any, event?:string): void}): void {
+        static on(event:string, listener: {(event?:string, params?: any): void}): void {
             const events = event.match(/[a-zA-Z]+/g);
             if (!events) {
                 return;
@@ -18,12 +18,14 @@ namespace Game {
         }
 
         static trigger(event: string, params?: any): void {
-            if (!(event in Event.listener)) {
-                return;
-            }
-            Event.listener[event].forEach(listener => {
-                listener(params, event);
+            Event.listener['all'].forEach(listener => {
+                listener(event, params);
             });
+            if (event in Event.listener) {
+                Event.listener[event].forEach(listener => {
+                    listener(event, params);
+                });
+            }
         }
     }
 }
