@@ -16,7 +16,7 @@ body, html {
     text-align: center;
 }
 
-#hud, #game, #planet, #ctrl {
+#hud, #game, #planet, #ctrl, #load {
     position: absolute;
     top: 0;
     left: 0;
@@ -24,6 +24,16 @@ body, html {
     bottom: 0;
 }
 
+#load {
+    background-image:radial-gradient(circle at 50% 55%, #222, #555 30%, #666 40%, #000 40%);
+    opacity: 1;
+    
+    &.hide {
+        display: none;
+    }
+}
+
+#load,
 #hud {
     display: flex;
     flex-wrap: wrap;
@@ -47,14 +57,17 @@ ul {
         line-height: 50px;
         font-size: 24px;
         font-weight: bold;
-        opacity: 1;
     }
 
     & > li.hide {
         opacity: 0;
         transition: opacity 1s;
     }
+}
 
+h1 {
+    font-size: 24px;
+    letter-spacing: 10px;
 }
 
 h3 {

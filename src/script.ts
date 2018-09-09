@@ -212,10 +212,10 @@ namespace Game {
         Event.on('start', () => {
             menu.hide();
             scene.init();
-            // if (!music) {
-            //     SFX.mixer('music').gain.value = .3;
-            //     music = SFX.play('music', true, 'music');
-            // }
+            if (!music) {
+                SFX.mixer('music').gain.value = .3;
+                music = SFX.play('music', true, 'music');
+            }
         });
 
         Event.on('end', () => {
@@ -276,7 +276,7 @@ namespace Game {
         }
     }
 
-    on(window, 'load', async () => {
+    on($('#start'), 'click', async () => {
         await SFX.init();
         Promise.all([
             new SFX.Sound('custom', [5, 1, 0], 1).render('exp', [220,0], 1),
@@ -301,5 +301,7 @@ namespace Game {
         resize();
         bind();
         update();
+        $('#load').className = 'hide';
     });
+
 }
