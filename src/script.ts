@@ -212,10 +212,10 @@ namespace Game {
         Event.on('start', () => {
             menu.hide();
             scene.init();
-            if (!music) {
-                SFX.mixer('music').gain.value = .3;
-                music = SFX.play('music', true, 'music');
-            }
+            // if (!music) {
+            //     SFX.mixer('music').gain.value = .3;
+            //     music = SFX.play('music', true, 'music');
+            // }
         });
 
         Event.on('end', () => {
@@ -272,7 +272,7 @@ namespace Game {
         render(scene);
         render(scene, .02);
         if (!menu.active && scene.ended()) {
-            menu.score(scene.score(), hero.tokens);
+            menu.score(hero);
         }
     }
 
@@ -293,7 +293,6 @@ namespace Game {
             Event.trigger('load');
         });
         hero.init();
-        hero.tokens = menu.token();
         camera.position.set(0, .5, 5);
         camera.rotate.x = -.7;
         gl.clearColor(0, 0, 0, 0);

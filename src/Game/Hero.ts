@@ -13,8 +13,6 @@ namespace Game {
         scaleTime: number;
         magnet: T3D.Vec3;
         magnetTime: number;
-        tokens: number = 0;
-        points: number;
         distance: number;
         tokenCollider: T3D.Sphere;
         collide: T3D.Vec3;
@@ -42,7 +40,6 @@ namespace Game {
             this.explode = 0;
             this.stroke = 0;
             if (reset) {
-                this.points = 0;
                 this.distance = 0;
             }
         }
@@ -74,8 +71,6 @@ namespace Game {
         }
 
         magnetize() {
-            this.tokens += 5;
-            this.points += 50;
             this.magnetTime = 450;
             Event.trigger('power', this);
         }
@@ -86,8 +81,6 @@ namespace Game {
         }
 
         coin() {
-            this.tokens += 1;
-            this.points += 10;
             Event.trigger('coin', this);
         }
 

@@ -3,7 +3,7 @@ body, html, canvas, ul, li {
     height: 100%;
 }
 
-body, html, canvas, ul, li, h2, h3, h4, #ctrl {
+body, html, canvas, table, tr, td, th, ul, li, h2, h3, h4, #ctrl {
     margin: 0;
     padding: 0;
 }
@@ -12,7 +12,7 @@ body, html {
     overflow: hidden;
     background-color: #000;
     color: #fff;
-    font: bold 18px Arial, Helvetica, sans-serif;
+    font: normal 14px Arial, Helvetica, sans-serif;
     text-align: center;
 }
 
@@ -44,6 +44,8 @@ ul {
 
     & > li {
         position: absolute;
+        line-height: 50px;
+        font-size: 24px;
         opacity: 1;
     }
 
@@ -52,11 +54,6 @@ ul {
         transition: opacity 1s;
     }
 
-}
-
-h2 {
-    margin: 10px 0;
-    font-size: 24px;
 }
 
 h3 {
@@ -79,8 +76,27 @@ h4 {
 
 }
 
+table {
+    min-width: 250px;
+    margin: 5px auto 0;
+}
+
+th {
+    text-align: left;
+    font-weight: normal;
+}
+
+td {
+    text-align: right;
+}
+
+.total {
+    font-weight: bold;
+    font-size: 18px;
+}
+
 #quest {
-    padding: 15px 0;
+    padding: 10px 0;
     background: rgba(0, 0, 0, .7);
     opacity: 1;
     visibility: hidden;
@@ -101,13 +117,19 @@ a {
     display: inline-block;
     width: 50px;
     line-height: 48px;
+    font-weight: bold;
     color: #000;
-    background: #ddd;
+    text-shadow: 1px 1px 1px #fff;
+    background-image: linear-gradient(#fff, #ccc);
     border: 2px solid #333;
     border-radius: 25px;
     padding: 0 20px;
     margin: 20px 10px;
     cursor: pointer;
+
+    &.disabled {
+        color: #999;
+    }
 }
 
 .end #ctrl,
@@ -125,6 +147,10 @@ a {
     opacity: 0;
     transition: opacity 1s;
     transition-delay: 2.5s;
+}
+
+.play table {
+    display: none;
 }
 
 * {

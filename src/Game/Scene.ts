@@ -57,10 +57,6 @@ namespace Game {
             return Math.abs(this.hero.speed.z) < .01;
         }
 
-        score() {
-            return Math.round(this.hero.points + this.hero.distance);
-        }
-
         input(key: number): void {
             const hero = this.hero;
             switch (key) {
