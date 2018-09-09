@@ -213,7 +213,9 @@ namespace Game {
             menu.hide();
             scene.init();
             if (!music) {
-                SFX.mixer('music').gain.value = .3;
+                let mixer = SFX.mixer('music'),
+                    time = mixer.context.currentTime;
+                mixer.gain.setValueAtTime(.3, time);
                 music = SFX.play('music', true, 'music');
             }
         });
@@ -277,8 +279,13 @@ namespace Game {
     }
 
     on($('#start'), 'click', async () => {
+        if ($('#start').className == 'disabled') {
+            return;
+        }
+        $('#start').className = 'disabled';
+        $('#start').textContent = 'loading';
         await SFX.init();
-        Promise.all([
+        await Promise.all([
             new SFX.Sound('custom', [5, 1, 0], 1).render('exp', [220,0], 1),
             new SFX.Sound('custom', [3, 1, 0], 1).render('hit', [1760,0], .3),
             new SFX.Sound('square', [.5, .1, 0], 1).render('power', [440,880,440,880,440,880,440,880], .3),
@@ -289,9 +296,7 @@ namespace Game {
                 new SFX.Channel(new SFX.Sound('sawtooth', [1, .3], .2), '8a2,8a2,8b2,8c3|8|8g2,8g2,8a2,8b2|8|8e2,8e2,8f2,8g2|4|8g2,8g2,8a2,8b2|4|'.repeat(4), 1),
                 new SFX.Channel(new SFX.Sound('sawtooth', [.5, .5], 1), '1a3,1g3,2e3,4b3,4c4,1a3c3e3,1g3b3d4,2e3g3b3,4d3g3b3,4g3c4e4|1|'+'8a3,8a3e4,8a3d4,8a3e4|2|8g3,8g3d4,8g3c4,8g3d4|2|8e3,8e3a3,8e3b3,8e3a3,4g3b3,4g3c4|1|'.repeat(2), 4)
             ])
-        ]).then(() => {
-            Event.trigger('load');
-        });
+        ]);
         hero.init();
         camera.position.set(0, .5, 5);
         camera.rotate.x = -.7;
