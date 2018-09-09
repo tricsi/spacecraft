@@ -43,7 +43,7 @@ namespace Game {
             }
         }
 
-        toString(result: boolean = false) {
+        toString() {
             let event = this.event,
                 text = LABEL[event],
                 param = this.target.toString();
@@ -56,7 +56,7 @@ namespace Game {
                 if (this.run) {
                     text += ' on a mission'
                 }
-                if (result) {
+                if (!this.done && this.count) {
                     param += ' / ' + this.count;
                 }
             }

@@ -33,9 +33,9 @@ namespace Game {
             this.selected = 0;
             this.heroes = [
                 {name: 'SPUTNIK', price: 0},
-                {name: 'VOYAGER', price: 2500},
-                {name: 'PIONEER', price: 5000},
-                {name: 'CASSINI', price: 15000}
+                {name: 'VOYAGER', price: 1000},
+                {name: 'PIONEER', price: 2500},
+                {name: 'CASSINI', price: 5000}
             ];
             this.tasklist = document.getElementsByTagName('H4');
             this.scores = document.getElementsByTagName('TD');
@@ -58,7 +58,7 @@ namespace Game {
                     tasks.push(new Task('coin', target * 75));
                     break;
                 case 2:
-                    tasks.push(new Task('power', target, target % 2 == 1));
+                    tasks.push(new Task('power', target, target % 2 == 0));
                     break;
                 default:
                     tasks.push(new Task('coin', target * 50, true));
@@ -185,7 +185,7 @@ namespace Game {
                     task.init();
                 }
                 let item = this.tasklist.item(i + 1);
-                item.textContent = task.toString(result);
+                item.textContent = task.toString();
                 item.className = task.done ? 'done' : '';
                 complete = complete && task.done;
             });
