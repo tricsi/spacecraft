@@ -1,10 +1,12 @@
 namespace Game {
 
     const LABEL = {
-        coin: "Collect $ data token",
-        power: "Collect $ big token",
-        planet: "Travel to $",
-        hit: "Destroy $ asteroid",
+        coin: 'Collect $ token',
+        power: 'Collect $ big token',
+        planet: 'Travel to $',
+        fence: 'Dodge junks $ time',
+        enemy: 'Dodge asteroids $ time',
+        hit: 'Destroy $ asteroid',
     };
 
     const PLANETS = ['Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto', 'Space'];
@@ -19,27 +21,26 @@ namespace Game {
 
         run: boolean;
 
+        done: boolean;
+
         constructor(event: string, target: number, run: boolean = false) {
             this.event = event;
             this.target = target;
             this.count = 0;
             this.run  = run || event == 'planet';
+            this.done = false;
         }
 
         init() {
-            if (this.run) {
+            if (!this.done && this.run) {
                 this.count = 0;
             }
         }
 
         on(event: string) {
-            if (this.event == event && this.count < this.target) {
-                this.count++;
+            if (!this.done && this.event == event) {
+                this.done = this.target <= ++this.count;
             }
-        }
-
-        done() {
-            return this.target <= this.count;
         }
 
         toString(result: boolean = false) {
@@ -53,7 +54,7 @@ namespace Game {
                     text += 's';
                 }
                 if (this.run) {
-                    text += ' in one mission'
+                    text += ' on a mission'
                 }
                 if (result) {
                     param += ' / ' + this.count;

@@ -12,7 +12,7 @@ namespace Game {
         selected: number;
         heroes: string[];
         scores: NodeListOf<Element>;
-        levels: Task[][];
+        tasks: Task[];
 
         constructor() {
             let data = JSON.parse(window.localStorage.getItem(STORE));
@@ -28,20 +28,55 @@ namespace Game {
             this.selected = 0;
             this.heroes = ['SPUTNIK', 'VOYAGER', 'PIONEER', 'CASSINI'];
             this.scores = document.getElementsByTagName('H4');
-            this.levels = [
-                [new Task('coin', 50), new Task('power', 1), new Task('planet', 1)],
-                [new Task('coin', 50, true), new Task('hit', 1), new Task('planet', 2)],
-            ];
             this.hero();
             this.bind();
+            this.init();
         }
 
         level() {
             return this.storage.level + 1;
         }
 
-        tasks(): Task[] {
-            return this.levels[this.storage.level % this.levels.length];
+        init() {
+            let level = this.level(),
+                tasks = [],
+                target = Math.ceil(level / 3);
+            switch (level % 3) {
+                case 1:
+                    tasks.push(new Task('coin', target * 75));
+                    break;
+                case 2:
+                    tasks.push(new Task('power', target, target % 2 == 0));
+                    break;
+                default:
+                    tasks.push(new Task('coin', target * 50, true));
+                    break;
+            }
+            target = Math.ceil(level / 4);
+            switch (level % 4) {
+                case 1:
+                    tasks.push(target < 8
+                        ? new Task('planet', target) 
+                        : new Task('hit', target, true)
+                    );
+                    break;
+                case 2:
+                    tasks.push(target % 2 == 0
+                        ? new Task('fence', 5 * target)
+                        : new Task('fence', 3 * target, true)
+                    );
+                    break;
+                case 3:
+                    tasks.push(target % 2 == 0
+                        ? new Task('enemy', 3 * target)
+                        : new Task('enemy', 2 * target, true)
+                    );
+                    break;
+                default:
+                    tasks.push(new Task('hit', target));
+                    break;
+            }
+            this.tasks = tasks;
         }
 
         bind() {            
@@ -58,7 +93,7 @@ namespace Game {
                 this.next();
             });
             Event.on('all', (event) => {
-                this.tasks().forEach(task => {
+                this.tasks.forEach(task => {
                     task.on(event);
                 });
             });
@@ -115,19 +150,20 @@ namespace Game {
 
         mission(result: boolean = false) {
             let complete = true;
-            this.tasks().forEach((task, i) => {
+            this.tasks.forEach((task, i) => {
                 if (!result) {
                     task.init();
                 }
                 let item = this.scores.item(i + 1);
                 item.textContent = task.toString(result);
-                item.className = task.done() ? 'done' : '';
-                complete = complete && task.done();
+                item.className = task.done ? 'done' : '';
+                complete = complete && task.done;
             });
             if (complete) {
-                this.scores.item(0).textContent = 'LEVEL ' + this.level();                
                 this.storage.level++;
+                this.scores.item(0).textContent = 'LEVEL ' + this.level();                
                 this.store();
+                this.init();
             }
         }
 
@@ -158,7 +194,7 @@ namespace Game {
             this.shop = false;
             this.active = false;
             this.mission();
-            this.scores.item(0).textContent =
+            this.scores.item(0).textContent = 'LEVEL ' + this.level();
             this.scores.item(4).textContent =
             this.scores.item(5).textContent = '';
             this.body.className = 'play';

@@ -105,9 +105,13 @@ namespace Game {
             this.hero.update();
             let rotate = false,
                 hero = this.hero,
-                speed = hero.speed.z;
+                speed = hero.speed.z,
+                fence = 0,
+                enemy = 0;
             this.platforms.forEach((platform, i) => {
                 if (platform.update(speed)) {
+                    fence += platform.fence.active && hero.transform.translate.y > -1 ? 1 : 0;
+                    enemy += platform.enemy.active && !platform.enemy.stroke && !hero.stroke ? 1 : 0;
                     let cfg = this.map.row[i % 3],
                         obj = cfg >> 2;
                     platform.block.active = (cfg & 1) > 0;
@@ -131,6 +135,12 @@ namespace Game {
                 platform.intersect(hero, add == 1 || add == -1);
             });
             hero.distance += speed;
+            if (fence > 0) {
+                Event.trigger('fence', fence);
+            }
+            if (enemy > 0) {
+                Event.trigger('enemy', enemy);
+            }
         }
 
     }
