@@ -152,6 +152,40 @@ td {
     }
 }
 
+i {
+    position: absolute;
+    display: block;
+    top: 12px;
+    width: 32px;
+    line-height: 32px;
+    font-size: 24px;
+    font-style: normal;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#sfx{
+    right: 10px;
+
+    &::before {
+        content: "♫";
+    }
+    &.no::before {
+        content: "♪";
+        text-decoration: line-through;
+    }
+    &.sfx::before {
+        content: "♪";
+    }
+}
+
+#fs {
+    left: 10px;
+
+    &::before {
+        content: "☐";
+    }
+}
 
 a {
     display: inline-block;

@@ -8,16 +8,6 @@ namespace Game {
         element.addEventListener(event, callback, capture);
     }
 
-    export function fullscreen() {
-        if (!document.webkitFullscreenElement) {
-            document.documentElement.webkitRequestFullscreen();
-            canvas.requestPointerLock();
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-            document.exitPointerLock();
-        }
-    }
-    
     export class Rand {
 
         static seed: number = Math.random();
@@ -226,7 +216,7 @@ namespace Game {
             if (!music) {
                 let mixer = SFX.mixer('music'),
                     time = mixer.context.currentTime;
-                mixer.gain.setValueAtTime(.3, time);
+                mixer.gain.setValueAtTime(menu.volume, time);
                 music = SFX.play('music', true, 'music');
             }
         });
@@ -283,7 +273,7 @@ namespace Game {
         if (!hero.active && music) {
             let mixer = SFX.mixer('music'),
                 time = mixer.context.currentTime;
-            mixer.gain.setValueCurveAtTime(Float32Array.from([.3, 0]), time, .5);
+            mixer.gain.setValueCurveAtTime(Float32Array.from([menu.volume, 0]), time, .5);
             music.stop(time + .5);
             music = null;
         }

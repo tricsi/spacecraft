@@ -16,6 +16,8 @@ namespace Game {
         tasklist: NodeListOf<Element>;
         tasks: Task[];
         stats: any;
+        sfxBtn: Element;
+        volume: number;
 
         constructor() {
             let data = JSON.parse(window.localStorage.getItem(STORE));
@@ -40,6 +42,8 @@ namespace Game {
             this.tasklist = document.getElementsByTagName('H4');
             this.scores = document.getElementsByTagName('TD');
             this.stats = {};
+            this.sfxBtn = $('#sfx');
+            this.volume = .3;
             this.hero();
             this.bind();
             this.init();
@@ -103,6 +107,37 @@ namespace Game {
             });
             on($('#next'), 'click', () => {
                 this.next();
+            });
+            on($('#fs'), 'click', () => {
+                if (!document.webkitFullscreenElement) {
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+            });
+            on(this.sfxBtn, 'click', () => {
+                let btn = this.sfxBtn,
+                    music = SFX.mixer('music'),
+                    sound = SFX.mixer('master'),
+                    time = sound.context.currentTime;
+                try {
+                    switch(btn.className) {
+                        case 'no':
+                            this.volume = .3;
+                            music.gain.setValueAtTime(this.volume, time);
+                            sound.gain.setValueAtTime(1, time);
+                            btn.className = '';
+                            break;
+                        case 'sfx':
+                            sound.gain.setValueAtTime(0, time);
+                            btn.className = 'no';
+                            break;
+                        default:
+                            this.volume = 0;
+                            music.gain.setValueAtTime(this.volume, time);
+                            btn.className = 'sfx';
+                    }
+                } catch (ex) {}
             });
             Event.on('all', (event) => {
                 if (event in this.stats) {
