@@ -109,8 +109,8 @@ namespace Game {
             rotate.z = 90 + (pos.x - this.x) * 25;
             rotate.y = (rotate.y + this.speed.z * 100) % 360;
             this.speed.y += this.acc;
-            if (this.speed.y < -.3) {
-                this.speed.y = -.3;
+            if (this.speed.y < -.25) {
+                this.speed.y = -.25;
             }
             pos.x += (this.x - pos.x) / 7;
             pos.y += this.speed.y;

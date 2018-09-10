@@ -33,9 +33,9 @@ namespace Game {
             this.selected = 0;
             this.heroes = [
                 {name: 'SPUTNIK', price: 0},
-                {name: 'VOYAGER', price: 1000},
-                {name: 'PIONEER', price: 2500},
-                {name: 'CASSINI', price: 5000}
+                {name: 'VOYAGER', price: 500},
+                {name: 'PIONEER', price: 1000},
+                {name: 'CASSINI', price: 2500}
             ];
             this.tasklist = document.getElementsByTagName('H4');
             this.scores = document.getElementsByTagName('TD');
@@ -155,7 +155,7 @@ namespace Game {
                 buy = this.storage.shop.indexOf(this.selected) < 0,
                 can = token >= data.price;
             this.info.item(0).textContent = data.name;
-            this.info.item(1).textContent = buy ? token + ' / ' + data.price : '';
+            this.info.item(1).textContent = buy ? `₮ ${data.price} / ${token}` : '';
             this.btn.textContent = buy ? 'BUY' : 'PLAY';
             this.btn.className = !buy || can ? '' : 'disabled';
         }
@@ -208,7 +208,7 @@ namespace Game {
                 total = Math.round(hero.distance),
                 mission = this.mission(true) ? 1 : 0;
             scores.item(0).textContent = total + '';
-            scores.item(1).textContent = tokens + ' x 10';
+            scores.item(1).textContent = '₮ ' + tokens + ' x 10';
             scores.item(2).textContent = power + ' x 25';
             scores.item(3).textContent = hit + ' x 50';
             scores.item(4).textContent = places + ' x 100';

@@ -17,7 +17,7 @@ namespace Game {
             document.exitPointerLock();
         }
     }
-
+    
     export class Rand {
 
         static seed: number = Math.random();
@@ -42,7 +42,8 @@ namespace Game {
         CYAN: [.3, 1, 1, 30]
     }
 
-    let canvas: HTMLCanvasElement = <HTMLCanvasElement>$('#game'),
+    let running: boolean = false,
+        canvas: HTMLCanvasElement = <HTMLCanvasElement>$('#game'),
         menu: Menu = new Menu(),
         music: AudioBufferSourceNode,
         time: number = new Date().getTime(),
@@ -191,7 +192,11 @@ namespace Game {
                 return;
             }
             keys[e.keyCode] = true;
-            if (menu.active) {
+            if (!running) {
+                if (keys[32]) {
+                    load();
+                }
+            } else if (menu.active) {
                 menu.input(e.keyCode);
                 return;
             } else {
@@ -204,6 +209,12 @@ namespace Game {
         });
         
         on(window, 'resize', resize);
+
+        on($('#start'), 'click', () => {
+            if (!running) {
+                load();
+            }
+        });
 
         Event.on('all', (event) => {
             SFX.play(event);
@@ -223,10 +234,6 @@ namespace Game {
         Event.on('end', () => {
             hero.init(false);
             menu.show();
-            if (music) {
-                music.stop();
-                music = null;
-            }
         });
     }
 
@@ -273,17 +280,21 @@ namespace Game {
         scene.update();
         render(scene);
         render(scene, .02);
+        if (!hero.active && music) {
+            let mixer = SFX.mixer('music'),
+                time = mixer.context.currentTime;
+            mixer.gain.setValueCurveAtTime(Float32Array.from([.3, 0]), time, .5);
+            music.stop(time + .5);
+            music = null;
+        }
         if (!menu.active && scene.ended()) {
             menu.score(hero);
         }
     }
 
-    on($('#start'), 'click', async () => {
-        if ($('#start').className == 'disabled') {
-            return;
-        }
+    async function load() {
+        running = true;
         $('#start').className = 'disabled';
-        $('#start').textContent = 'loading';
         await SFX.init();
         await Promise.all([
             new SFX.Sound('custom', [5, 1, 0], 1).render('exp', [220,0], 1),
@@ -297,6 +308,11 @@ namespace Game {
                 new SFX.Channel(new SFX.Sound('sawtooth', [.5, .5], 1), '1a3,1g3,2e3,4b3,4c4,1a3c3e3,1g3b3d4,2e3g3b3,4d3g3b3,4g3c4e4|1|'+'8a3,8a3e4,8a3d4,8a3e4|2|8g3,8g3d4,8g3c4,8g3d4|2|8e3,8e3a3,8e3b3,8e3a3,4g3b3,4g3c4|1|'.repeat(2), 4)
             ])
         ]);
+        $('#load').className = 'hide';
+        update();
+    }
+
+    on(window, 'load', async () => {
         hero.init();
         camera.position.set(0, .5, 5);
         camera.rotate.x = -.7;
@@ -305,8 +321,7 @@ namespace Game {
         gl.enable(gl.DEPTH_TEST);
         resize();
         bind();
-        update();
-        $('#load').className = 'hide';
     });
 
+    $('ontouchstart' in window ? '#keys' : '#touch').className = 'hide';
 }
