@@ -138,7 +138,7 @@ namespace Game {
         
         on(document, 'touchmove', (e: TouchEvent) => {
             e.preventDefault();
-            if (!drag) {
+            if (!drag || menu.active) {
                 return;
             }
             let touch = e.touches[0];
