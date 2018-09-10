@@ -162,10 +162,7 @@ namespace Game {
         }, {passive: false});
         
         on(document, 'touchend', (e: TouchEvent) => {
-            if (menu.active) {
-                return;
-            }
-            if (drag) {
+            if (drag && !menu.active) {
                 keys[32] = true;
                 scene.input(32);
             }
