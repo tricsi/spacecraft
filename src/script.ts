@@ -310,6 +310,7 @@ namespace Game {
         camera.position.set(0, 0, 1.2);
         hero.transform.rotate.set(10, 22, 30);
         render(hero);
+        render(hero, .02);
         (<HTMLLinkElement>$("link[rel=apple-touch-icon]")).href = 
         (<HTMLLinkElement>$("link[rel=icon]")).href = canvas.toDataURL();
         camera.position.set(0, .5, 5);
