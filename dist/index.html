@@ -7,6 +7,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <link href="style.css" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="192x192">
+<link rel="icon" sizes="192x192">
 </head>
 <body>
 <ul id="planet">
@@ -19,7 +21,7 @@
     <li style="background-image:radial-gradient(circle at 50% 100%, #300, #510 35%, #630 45%, #310 46%, #000 48%)">MARS</li>
     <li style="background-image:radial-gradient(circle at 50% 100%, #222, #555 30%, #666 40%, #000 40%)">MOON</li>
 </ul>
-<canvas id="game"></canvas>
+<canvas id="game" width="192" height="192"></canvas>
 <div id="hud">
     <div></div>
     <div id="quest">
@@ -43,8 +45,8 @@
     <div><h3></h3><a id="prev">&lt;</a><a id="play"></a><a id="next">&gt;</a></div>
 </div>
 <div>
-    <i id="fs"></i>
-    <i id="sfx"></i>
+    <i id="fs" title="Fullscreen"></i>
+    <i id="sfx" title="Audio"></i>
 </div>    
 <div id="load">
     <div><h1>SPACECRAFT</h1></div>

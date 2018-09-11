@@ -91,7 +91,7 @@ namespace Game {
             token: new T3D.Mesh(gl, 9, [.45, .3, .45, .5, .5, .5, .5, -.5, .45, -.5, .45, -.3], 30),
             enemy: new T3D.Mesh(gl, 6),
         },
-        hero: Hero = new Hero(mesh.hero[3], COLOR.WHITE),
+        hero: Hero = new Hero(mesh.hero[0], COLOR.WHITE),
         scene: Scene = new Scene(hero, () => {
             let platform = new Platform(),
                 block = new T3D.Item(mesh.block, COLOR.BLUE, [,,,,45]),
@@ -281,7 +281,9 @@ namespace Game {
 
     async function load() {
         running = true;
-        $('#start').className = 'disabled';
+        let btn = $('#start');
+        btn.className = 'disabled';
+        btn.textContent = 'loading';
         await SFX.init();
         await Promise.all([
             new SFX.Sound('custom', [5, 1, 0], 1).render('exp', [220,0], 1),
@@ -301,11 +303,16 @@ namespace Game {
 
     on(window, 'load', async () => {
         hero.init();
-        camera.position.set(0, .5, 5);
-        camera.rotate.x = -.7;
         gl.clearColor(0, 0, 0, 0);
         gl.enable(gl.CULL_FACE);
         gl.enable(gl.DEPTH_TEST);
+        camera.rotate.x = -.7;
+        camera.position.set(0, 0, 1.2);
+        hero.transform.rotate.set(10, 22, 30);
+        render(hero);
+        (<HTMLLinkElement>$("link[rel=apple-touch-icon]")).href = 
+        (<HTMLLinkElement>$("link[rel=icon]")).href = canvas.toDataURL();
+        camera.position.set(0, .5, 5);
         resize();
         bind();
     });
