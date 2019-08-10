@@ -1,15 +1,12 @@
 {
-    "compilerOptions": {
-        "allowJs": true,
-        "target": "es2017",
-        "module": "amd",
-        "sourceMap": true,
-        "outFile": "./script.js"
-    },
-    "include": [
-        "src/t3d.ts",
-        "src/sfx.ts",
-        "src/Game/*.ts",
-        "src/script.ts"
+  "compilerOptions": {
+    "target": "es2017",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "lib": [
+      "dom",
+      "es2017"
     ]
+  }
 }

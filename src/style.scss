@@ -27,7 +27,7 @@ body, html {
 #load {
     background-image:linear-gradient(#003, #033 50%, #000 50%);
     opacity: 1;
-    
+
     &.hide {
         display: none;
     }
@@ -95,7 +95,7 @@ h4 {
         line-height: 25px;
         font-size: 20px;
     }
-    
+
     &.done {
         text-decoration: line-through;
     }

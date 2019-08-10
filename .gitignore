@@ -1,4 +1,5 @@
-/build
+/.idea
+/dist/*.css
+/dist/*.js
 /node_modules
-/dist.zip
-/package-lock.json
+package-lock.json

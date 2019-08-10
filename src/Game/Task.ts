@@ -1,68 +1,64 @@
-namespace Game {
+const LABEL: {[key: string]: string} = {
+    coin: 'Collect $ token',
+    power: 'Collect $ big token',
+    planet: 'Travel to $',
+    fence: 'Dodge junks $ time',
+    enemy: 'Dodge asteroids $ time',
+    hit: 'Destroy $ asteroid',
+};
 
-    const LABEL = {
-        coin: 'Collect $ token',
-        power: 'Collect $ big token',
-        planet: 'Travel to $',
-        fence: 'Dodge junks $ time',
-        enemy: 'Dodge asteroids $ time',
-        hit: 'Destroy $ asteroid',
-    };
+const PLANETS = ['Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto', 'Space'];
 
-    const PLANETS = ['Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto', 'Space'];
+export class Task {
 
-    export class Task {
+    event: string;
 
-        event: string;
+    target: number;
 
-        target: number;
+    count: number;
 
-        count: number;
+    run: boolean;
 
-        run: boolean;
+    done: boolean;
 
-        done: boolean;
+    constructor(event: string, target: number, run: boolean = false) {
+        this.event = event;
+        this.target = target;
+        this.count = 0;
+        this.run  = run || event == 'planet';
+        this.done = false;
+    }
 
-        constructor(event: string, target: number, run: boolean = false) {
-            this.event = event;
-            this.target = target;
+    init() {
+        if (!this.done && this.run) {
             this.count = 0;
-            this.run  = run || event == 'planet';
-            this.done = false;
         }
+    }
 
-        init() {
-            if (!this.done && this.run) {
-                this.count = 0;
+    on(event: string) {
+        if (!this.done && this.event == event) {
+            this.done = this.target <= ++this.count;
+        }
+    }
+
+    toString() {
+        let event = this.event,
+            text = LABEL[event],
+            param = this.target.toString();
+        if (event == 'planet') {
+            param = PLANETS[this.target - 1];
+        } else {
+            if (this.target > 1) {
+                text += 's';
+            }
+            if (this.run) {
+                text += ' on a mission'
+            }
+            if (!this.done && this.count) {
+                param += ' / ' + this.count;
             }
         }
-
-        on(event: string) {
-            if (!this.done && this.event == event) {
-                this.done = this.target <= ++this.count;
-            }
-        }
-
-        toString() {
-            let event = this.event,
-                text = LABEL[event],
-                param = this.target.toString();
-            if (event == 'planet') {
-                param = PLANETS[this.target - 1];
-            } else {
-                if (this.target > 1) {
-                    text += 's';
-                }
-                if (this.run) {
-                    text += ' on a mission'
-                }
-                if (!this.done && this.count) {
-                    param += ' / ' + this.count;
-                }
-            }
-            return text.replace('$', param);
-        }
-
+        return text.replace('$', param);
     }
 
 }
