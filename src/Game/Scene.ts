@@ -2,7 +2,7 @@ import { Event } from "./Event";
 import { Hero } from "./Hero";
 import { Map } from "./Map";
 import { Platform } from "./Platform";
-import { Item } from "../T3D/Item";
+import { Item } from "../T3D/index";
 
 export class Scene extends Item {
 

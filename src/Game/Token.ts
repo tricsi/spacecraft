@@ -1,6 +1,6 @@
 import { Rand } from "../main";
 import { Hero } from "./Hero";
-import { Item } from "../T3D/Item";
+import { Item } from "../T3D/index";
 
 const yellow = [1, 1, .3, 30];
 const purple = [1, .3, 1, 30];

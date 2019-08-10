@@ -8,12 +8,7 @@ import { Token } from "./Game/Token";
 import { Map } from "./Game/Map";
 import { Event } from "./Game/Event";
 import { Channel, SFX, Sound } from "./sfx";
-import { Vec3 } from "./T3D/Vec3";
-import { Camera } from "./T3D/Camera";
-import { Shader } from "./T3D/Shader";
-import { Mesh } from "./T3D/Mesh";
-import { Item } from "./T3D/Item";
-import { Box, Sphere } from "./T3D/Collider";
+import { Vec3, Camera, Shader, Mesh, Item, Box, Sphere } from "./T3D/index";
 
 export function $(query: string, element?: Element): Element {
     return (element || document).querySelector(query);

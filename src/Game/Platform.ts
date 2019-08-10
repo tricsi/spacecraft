@@ -1,7 +1,7 @@
 import { Enemy } from "./Enemy";
 import { Hero } from "./Hero";
 import { Token } from "./Token";
-import { Item } from "../T3D/Item";
+import { Item } from "../T3D/index";
 
 export class Platform extends Item {
 

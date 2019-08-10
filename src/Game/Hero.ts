@@ -1,8 +1,6 @@
 import { Event } from "./Event";
 import { COLOR } from "../main";
-import { Item } from "../T3D/Item";
-import { Vec3 } from "../T3D/Vec3";
-import { Sphere } from "../T3D/Collider";
+import { Item, Vec3, Sphere } from "../T3D/index";
 
 export class Hero extends Item {
 

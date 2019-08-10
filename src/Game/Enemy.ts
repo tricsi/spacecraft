@@ -1,6 +1,6 @@
 import { Hero } from "./Hero";
 import { Event } from "./Event";
-import { Item } from "../T3D/Item";
+import { Item } from "../T3D/index";
 
 export class Enemy extends Item {
 
