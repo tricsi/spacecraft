@@ -6,11 +6,34 @@ const CleanWebpackPlugin = require("clean-webpack-plugin");
 const TerserWebpackPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const CompressionPlugin = require('compression-webpack-plugin');
+const { execFile } = require("child_process");
+const advzip = require("advzip-bin");
 const path = require("path");
+const fs = require("fs");
 
 const distDir = path.resolve(__dirname, "dist");
-const isDev = process.env.npm_lifecycle_event !== 'build';
+const isDev = process.env.npm_lifecycle_event !== "build";
+
+class AdvzipPlugin {
+
+    constructor(options) {
+        this.opt = options;
+    }
+
+    apply(compiler) {
+        compiler.hooks.done.tap("advzip", () => {
+            if (this.opt.disabled) {
+                return;
+            }
+            const args = ["-a4", this.opt.out].concat(this.opt.files);
+            execFile(advzip, args, {cwd: this.opt.cwd}, () => {
+                const out = path.resolve(this.opt.cwd, this.opt.out);
+                const stats = fs.statSync(out);
+                console.log(`Advzip: ${stats.size}`);
+            });
+        });
+    }
+}
 
 module.exports = {
 
@@ -24,7 +47,7 @@ module.exports = {
 
     output: {
         path: distDir,
-        filename: 'main_bundle.js'
+        filename: "main_bundle.js"
     },
 
     module: {
@@ -65,8 +88,8 @@ module.exports = {
     },
 
     devServer: {
-        contentBase: "./dist",
-        stats: 'minimal',
+        contentBase: distDir,
+        stats: "minimal",
         overlay: true
     },
 
@@ -90,8 +113,11 @@ module.exports = {
             }
         }),
         new HtmlWebpackInlineSourcePlugin(),
-        new CompressionPlugin({
-            include: /\.html$/
+        new AdvzipPlugin({
+            cwd: distDir,
+            out: "game.zip",
+            files: ["index.html"],
+            disabled: isDev
         })
     ]
 };
