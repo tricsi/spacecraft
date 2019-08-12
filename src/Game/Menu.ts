@@ -2,7 +2,7 @@ import { Event } from "./Event";
 import { $, on } from "../main";
 import { Hero } from "./Hero";
 import { Task } from "./Task";
-import { SFX } from "../sfx";
+import SFX from "../sfx";
 
 const STORE = 'offliner_hi';
 

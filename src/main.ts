@@ -7,7 +7,7 @@ import { Enemy } from "./Game/Enemy";
 import { Token } from "./Game/Token";
 import { Map } from "./Game/Map";
 import { Event } from "./Game/Event";
-import { Channel, SFX, Sound } from "./sfx";
+import SFX, { Channel, Sound } from "./sfx";
 import { Vec3, Camera, Shader, Mesh, Item, Box, Sphere } from "./T3D/index";
 
 export function $(query: string, element?: Element): Element {
@@ -259,13 +259,13 @@ async function load() {
     btn.textContent = 'loading';
     await SFX.init();
     await Promise.all([
-        new Sound('custom', [5, 1, 0], 1).render('exp', [220,0], 1),
-        new Sound('custom', [3, 1, 0], 1).render('hit', [1760,0], .3),
-        new Sound('square', [.5, .1, 0], 1).render('power', [440,880,440,880,440,880,440,880], .3),
-        new Sound('triangle', [.5, .1, 0], 1).render('jump', [220,880], .3),
-        new Sound('square', [.2, .1, 0], .2).render('coin', [1760,1760], .2),
-        new Sound('custom', [.1, .5, 0], .3).render('move', [1760,440], .3),
-        SFX.render('music', [
+        SFX.sound('exp', new Sound('custom', [5, 1, 0], 1), [220, 0], 1),
+        SFX.sound('hit', new Sound('custom', [3, 1, 0], 1), [1760, 0], .3),
+        SFX.sound('power', new Sound('square', [.5, .1, 0], 1), [440, 880, 440, 880, 440, 880, 440, 880], .3),
+        SFX.sound('jump', new Sound('triangle', [.5, .1, 0], 1), [220, 880], .3),
+        SFX.sound('coin', new Sound('square', [.2, .1, 0], .2), [1760, 1760], .2),
+        SFX.sound('move', new Sound('custom', [.1, .5, 0], .3), [1760, 440], .3),
+        SFX.music('music', [
             new Channel(new Sound('sawtooth', [1, .3], .2), '8a2,8a2,8b2,8c3|8|8g2,8g2,8a2,8b2|8|8e2,8e2,8f2,8g2|4|8g2,8g2,8a2,8b2|4|'.repeat(4), 1),
             new Channel(new Sound('sawtooth', [.5, .5], 1), '1a3,1g3,2e3,4b3,4c4,1a3c3e3,1g3b3d4,2e3g3b3,4d3g3b3,4g3c4e4|1|'+'8a3,8a3e4,8a3d4,8a3e4|2|8g3,8g3d4,8g3c4,8g3d4|2|8e3,8e3a3,8e3b3,8e3a3,4g3b3,4g3c4|1|'.repeat(2), 4)
         ])
