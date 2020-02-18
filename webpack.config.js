@@ -81,8 +81,22 @@ module.exports = {
                 ]
             },
             {
-                test: /\.glsl$/,
-                use: "glsl-minify-loader"
+                test: /\.vert$/,
+                use: {
+                    loader: "glsl-minify-loader",
+                    options: {
+                        shaderType: "vertex"
+                    }
+                }
+            },
+            {
+                test: /\.frag$/,
+                use: {
+                    loader: "glsl-minify-loader",
+                    options: {
+                        shaderType: "fragment"
+                    }
+                }
             }
         ]
     },

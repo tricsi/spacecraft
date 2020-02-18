@@ -9,6 +9,8 @@ import { Map } from "./Game/Map";
 import { Event } from "./Game/Event";
 import SFX, { Channel, Sound } from "./sfx";
 import { Vec3, Camera, Shader, Mesh, Item, Box, Sphere } from "./T3D/index";
+import vertShader from "./shader/tiny.vert";
+import fragShader from "./shader/tiny.frag";
 
 export function $(query: string, element?: Element): Element {
     return (element || document).querySelector(query);
@@ -50,8 +52,6 @@ let running: boolean = false,
     gl: WebGLRenderingContext = canvas.getContext('webgl'),
     light: Vec3 = new Vec3(5, 15, 7),
     camera: Camera = new Camera(canvas.width / canvas.height),
-    vertShader = require("./shader/vert.glsl?t=vertex"),
-    fragShader = require("./shader/frag.glsl"),
     shader: Shader = new Shader(gl, vertShader, fragShader),
     mesh = {
         hero: [
